@@ -82,7 +82,8 @@ def bus_form_page():
         finally:
             cursor.close()
             con.close()
-    return render_template('busForm.html', from_cities=from_cities, to_cities=to_cities)
+    today = datetime.now().date().strftime('%Y-%m-%d')
+    return render_template('busForm.html', from_cities=from_cities, to_cities=to_cities, today=today)
 
 @app.route('/first')
 def first_page():
@@ -187,8 +188,8 @@ def search_bus():
     if con:
         cursor = con.cursor(dictionary=False) # return list/tuple
         try:
-            query = "SELECT id, bus_name, from_city, to_city, travel_date, seats_available, type, arr_time, dep_time, price, image FROM buses WHERE LOWER(from_city)=LOWER(%s) AND LOWER(to_city)=LOWER(%s) AND seats_available > 0"
-            cursor.execute(query, (from_city, to_city))
+            query = "SELECT id, bus_name, from_city, to_city, travel_date, seats_available, type, arr_time, dep_time, price, image FROM buses WHERE LOWER(from_city)=LOWER(%s) AND LOWER(to_city)=LOWER(%s) AND travel_date=%s AND seats_available > 0"
+            cursor.execute(query, (from_city, to_city, date))
             results = cursor.fetchall()
             for row in results:
                 # 0: id, 1: name, 2: from, 3: to, 4: date, 5: seats, 6: type, 7: arr, 8: dep, 9: price, 10: image
