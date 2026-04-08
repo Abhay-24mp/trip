@@ -1,58 +1,137 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Trip Connect - Bus Search</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-        }
-        .search-box {
-            width: 600px;
-            margin: 80px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: space-between;
-        }
-        input {
-            padding: 10px;
-            width: 30%;
-        }
-        button {
-            padding: 10px 20px;
-            background: red;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
+  <title>Search Buses - Trip Connect</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/static/css/style.css" rel="stylesheet">
+
+  <style>
+    body { background: #f8f9fa; }
+    #header { background: rgba(20, 30, 48, 0.9); }
+    
+    .hero-search {
+      width: 100%;
+      height: 60vh;
+      background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/static/img/hero-bg.jpg') center center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 80px;
+    }
+
+    .form-container {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .form-container h2 {
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .form-group label {
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .btn-search {
+      background: #ff7a18;
+      color: #fff;
+      padding: 12px 30px;
+      border-radius: 5px;
+      border: none;
+      font-weight: 600;
+      transition: 0.3s;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    .btn-search:hover {
+      background: #ff8b33;
+      transform: scale(1.02);
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="search-box">
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="/">Trip Connect</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/buses.html">Buses</a></li>
+          <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link" href="/first">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <form action="SearchBus" method="post" style="display:flex; width:100%; gap:10px;">
-        
-        <input type="text" name="from" placeholder="From" required>
+  <!-- ======= Hero Search ======= -->
+  <section class="hero-search">
+    <div class="container" data-aos="zoom-in">
+      <div class="form-container mx-auto">
+        <h2>Find Your Perfect Ride</h2>
+        <form action="/SearchBus" method="post">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label text-white">Departure City</label>
+              <input type="text" name="from" class="form-control" placeholder="From (e.g. Pune)" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-white">Destination City</label>
+              <input type="text" name="to" class="form-control" placeholder="To (e.g. Mumbai)" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-white">Travel Date</label>
+              <input type="date" name="date" class="form-control" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-search">Search Buses</button>
+        </form>
+      </div>
+    </div>
+  </section>
 
-        <input type="text" name="to" placeholder="To" required>
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="mt-5">
+    <div class="container py-4 text-center">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Trip Connect</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
 
-        <input type="date" name="date" required>
-        
-        
-
-        <button type="submit">Search Buses</button>
-
-    </form>
-
-</div>
+  <!-- Vendor JS Files -->
+  <script src="/static/vendor/aos/aos.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    AOS.init();
+  </script>
 
 </body>
 </html>

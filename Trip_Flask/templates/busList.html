@@ -1,101 +1,217 @@
-
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Available Buses - Trip Connect</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f9;
-        }
-        .bus-card {
-            width: 600px;
-            margin: 20px auto;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        button {
-            padding: 8px 15px;
-            background: green;
-            color: white;
-            border: none;
-        }
-        input {
-            margin: 5px 0;
-        }
-    </style>
+  <title>Available Buses - Trip Connect</title>
 
-    <!-- 🔥 JS -->
-    <script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/static/css/style.css" rel="stylesheet">
+
+  <style>
+    body { background: #f4f6f9; }
+    #header { background: rgba(20, 30, 48, 0.9); position: relative; }
+    
+    .results-container {
+      padding: 60px 0;
+    }
+
+    .bus-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      transition: 0.3s;
+      border-left: 5px solid #ff7a18;
+    }
+
+    .bus-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .bus-info h3 {
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .bus-badge {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .info-grid {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .info-item i {
+      color: #ff7a18;
+      margin-right: 8px;
+    }
+
+    .booking-panel {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #eee;
+    }
+
+    .price-tag {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ff7a18;
+    }
+
+    .btn-book {
+      background: #ff7a18;
+      color: #fff;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 5px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .total-field {
+      font-weight: 700;
+      color: #27ae60;
+      font-size: 18px;
+      border: none;
+      background: transparent;
+      width: 100px;
+    }
+  </style>
+
+  <script>
     function updateTotal(busId, price) {
-
         let passengers = document.getElementById("passengers_" + busId).value;
-
         let total = passengers * price;
-
         document.getElementById("total_" + busId).value = total + " ₹";
     }
-    </script>
-
+  </script>
 </head>
 
 <body>
 
-<h2 style="text-align:center;">Available Buses</h2>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="/">Trip Connect</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link active" href="/buses.html">Buses</a></li>
+          <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link" href="/first">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-{% if buses %}
-{% for b in buses %}
-{% set price = b[9]|int %}
+  <main class="results-container">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold" data-aos="fade-up">Available Bus Services</h2>
 
-<div class="bus-card">
-    <h3>{{ b[1] }} ({{ b[6] }})</h3>
-    <p><b>Route:</b> {{ b[2] }} → {{ b[3] }}</p>
-    <p><b>Time:</b> 🕒 {{ b[7] }} → {{ b[8] }}</p>
-    <p>Date: {{ b[4] }}</p>
-    <p>Seats Available: {{ b[5] }}</p>
+      {% if buses %}
+        <div class="row">
+          {% for b in buses %}
+          {% set price = b[9]|int %}
+          <div class="col-lg-10 mx-auto" data-aos="fade-up">
+            <div class="bus-card row">
+              <div class="col-md-7 bus-info">
+                <span class="bus-badge">{{ b[6] }}</span>
+                <h3>{{ b[1] }}</h3>
+                <div class="info-grid">
+                  <div class="info-item"><i class="bi bi-geo-alt-fill"></i>{{ b[2] }} → {{ b[3] }}</div>
+                  <div class="info-item"><i class="bi bi-clock-fill"></i>{{ b[7] }} - {{ b[8] }}</div>
+                </div>
+                <div class="info-grid">
+                  <div class="info-item"><i class="bi bi-calendar-check"></i>{{ b[4] }}</div>
+                  <div class="info-item"><i class="bi bi-people-fill"></i>{{ b[5] }} Seats Left</div>
+                </div>
+              </div>
 
-    <!-- 💰 PRICE -->
-    <p><b>Price per person:</b> ₹ {{ price }}</p>
+              <div class="col-md-5">
+                <div class="booking-panel">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Price per seat</span>
+                    <span class="price-tag">₹ {{ price }}</span>
+                  </div>
 
-    <!-- 🔥 Book Form -->
-    <form action="BusBooking" method="post">
+                  <form action="/BusBooking" method="post">
+                    <input type="hidden" name="busId" value="{{ b[0] }}">
+                    <input type="hidden" name="price" value="{{ price }}">
 
-        <input type="hidden" name="busId" value="{{ b[0] }}">
-        <input type="hidden" name="price" value="{{ price }}">
+                    <div class="mb-2">
+                        <input type="text" name="fullname" class="form-control form-control-sm" placeholder="Full Name" required>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" name="mobile" class="form-control form-control-sm" placeholder="Mobile Number" required>
+                    </div>
+                    
+                    <div class="row align-items-center mt-3">
+                      <div class="col-6">
+                        <label class="small text-muted">Passengers</label>
+                        <input type="number" id="passengers_{{ b[0] }}" name="passengers" class="form-control form-control-sm" min="1" value="1" onchange="updateTotal('{{ b[0] }}', {{ price }})" required>
+                      </div>
+                      <div class="col-6 text-end">
+                        <label class="small text-muted d-block">Total</label>
+                        <input type="text" id="total_{{ b[0] }}" class="total-field text-end" readonly value="{{ price }} ₹">
+                      </div>
+                    </div>
 
-        Name: <input type="text" name="fullname" required><br>
-        Mobile: <input type="text" name="mobile" required><br>
+                    <button type="submit" class="btn-book">Confirm Booking</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-5" data-aos="fade-up">
+          <i class="bi bi-exclamation-circle text-danger display-1"></i>
+          <h3 class="mt-4">No buses found for your search criteria.</h3>
+          <a href="/busForm" class="btn btn-outline-primary mt-3">Modify Search</a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
 
-        <!-- 👇 Passenger -->
-        Passengers: 
-        <input type="number" 
-               id="passengers_{{ b[0] }}" 
-               name="passengers" 
-               min="1" 
-               value="1"
-               onchange="updateTotal('{{ b[0] }}', {{ price }})" required><br>
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container py-4 text-center">
+      <div class="copyright">
+        &copy; Copyright <strong><span>Trip Connect</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
 
-        <!-- 💸 TOTAL -->
-        Total:
-        <input type="text" 
-               id="total_{{ b[0] }}" 
-               readonly 
-               value="{{ price }} ₹"><br><br>
-
-        <button type="submit">Book Now</button>
-    </form>
-</div>
-
-{% endfor %}
-{% else %}
-
-<h3 style="text-align:center; color:red;">No Buses Available ❌</h3>
-
-{% endif %}
+  <script src="/static/vendor/aos/aos.js"></script>
+  <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    AOS.init();
+  </script>
 
 </body>
 </html>
