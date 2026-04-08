@@ -398,7 +398,7 @@ def cancel_hotel_booking():
 
 @app.route('/ViewBookings', methods=['POST', 'GET'])
 def view_bookings():
-    mobile = request.form.get('mobile_no')
+    mobile = request.values.get('mobile_no') or request.values.get('mobile')
     if not mobile:
          return redirect(url_for('mybooking_page'))
          

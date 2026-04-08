@@ -1,134 +1,201 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>My Bookings</title>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #f4f6f9;
-            padding-bottom: 50px;
-        }
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        h2 {
-            text-align: center;
-            margin-top: 40px;
-            color: #333;
-        }
+  <title>Your History - Trip Connect</title>
 
-        .card {
-            width: 500px;
-            margin: 20px auto;
-            padding: 25px;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            position: relative;
-        }
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-        .type-tag {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
 
-        .type-bus { background: #e3f2fd; color: #1976d2; }
-        .type-car { background: #f3e5f5; color: #7b1fa2; }
-        .type-hotel { background: #fff3e0; color: #e65100; }
+  <!-- Template Main CSS File -->
+  <link href="/static/assets/css/style.css" rel="stylesheet">
 
-        h3 { margin-top: 0; color: #2c3e50; }
-        p { margin: 8px 0; font-size: 14px; color: #555; }
-        
-        .status { font-weight: bold; }
+  <style>
+    body { background: #f4f6f9; }
+    #header { background: rgba(20, 30, 48, 0.9); position: relative; }
+    
+    .history-container {
+      padding: 60px 0;
+      min-height: 70vh;
+    }
 
-        .cancel-btn {
-            display: block;
-            width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            background: linear-gradient(45deg, #ff4b2b, #ff416c);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
+    .booking-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      transition: 0.3s;
+      border-top: 5px solid #ff7a18;
+      position: relative;
+    }
 
-        .cancel-btn:hover {
-            opacity: 0.9;
-            transform: scale(0.98);
-        }
+    .booking-card:hover { transform: translateY(-3px); }
 
-        .no-booking {
-            text-align: center;
-            color: #666;
-            margin-top: 50px;
-        }
+    .service-type {
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      padding: 5px 15px;
+      border-radius: 5px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #fff;
+    }
 
-        .back-link {
-            display: block;
-            text-align: center;
-            margin-top: 20px;
-            color: #3498db;
-            text-decoration: none;
-        }
-    </style>
+    .type-bus { background: #1976d2; }
+    .type-car { background: #7b1fa2; }
+    .type-hotel { background: #e65100; }
+
+    .service-title {
+      font-weight: 700;
+      color: #2c3e50;
+      margin-top: 5px;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 20px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .info-row i { color: #ff7a18; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-confirmed { background: #e8f5e9; color: #2e7d32; }
+    .status-cancelled { background: #ffebee; color: #c62828; }
+
+    .cancel-btn {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .cancel-btn:hover { background: #c82333; }
+    
+    .no-results {
+        background: #fff;
+        padding: 50px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+  </style>
 </head>
+
 <body>
 
-    <h2>My Booking History</h2>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="/">Trip Connect</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link active" href="/mybooking.html">My Bookings</a></li>
+          <li><a class="nav-link" href="/first">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    {% if history %}
-        {% for b in history %}
-            <div class="card">
-                <span class="type-tag type-{{ b['type']|lower }}">{{ b['type'] }}</span>
-                
-                <h3>{{ b['service'] }}</h3>
-                
-                {% if b['type'] == 'Bus' %}
-                    <p><b>Route:</b> {{ b['from_loc'] }} to {{ b['to_loc'] }}</p>
-                    <p><b>Date:</b> {{ b['date_val'] }}</p>
-                    <p><b>Passengers:</b> {{ b['qty'] }}</p>
-                {% elif b['type'] == 'Car' %}
-                    <p><b>City:</b> {{ b['from_loc'] }}</p>
-                    <p><b>Days:</b> {{ b['qty'] }}</p>
-                {% else %}
-                    <p><b>Location:</b> {{ b['from_loc'] if b['from_loc'] else 'Various' }}</p>
-                    <p><b>Check-in:</b> {{ b['date_val'] }}</p>
-                    <p><b>Days:</b> {{ b['qty'] }}</p>
-                {% endif %}
+  <main class="history-container">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold" data-aos="fade-up">Booking History for {{ mobile }}</h2>
 
-                <p><b>Status:</b> 
-                    <span class="status" style="color: {{ 'green' if b['status'] == 'CONFIRMED' else 'red' }};">
-                        {{ b['status'] }}
-                    </span>
-                </p>
+      {% if history %}
+        <div class="row">
+          {% for b in history %}
+          <div class="col-lg-8 mx-auto" data-aos="fade-up">
+            <div class="booking-card">
+              <span class="service-type type-{{ b['type']|lower }}">{{ b['type'] }}</span>
+              
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h4 class="service-title">{{ b['service'] }}</h4>
+                  
+                  <div class="info-row">
+                    {% if b['type'] == 'Bus' %}
+                      <span><i class="bi bi-geo-alt-fill"></i> {{ b['from_loc'] }} → {{ b['to_loc'] }}</span>
+                      <span><i class="bi bi-calendar-event"></i> {{ b['date_val'] }}</span>
+                      <span><i class="bi bi-people-fill"></i> {{ b['qty'] }} Pass</span>
+                    {% elif b['type'] == 'Car' %}
+                      <span><i class="bi bi-geo-alt-fill"></i> {{ b['from_loc'] }}</span>
+                      <span><i class="bi bi-clock-history"></i> {{ b['qty'] }} Days</span>
+                    {% else %}
+                      <span><i class="bi bi-calendar-check"></i> In: {{ b['date_val'] }}</span>
+                      <span><i class="bi bi-calendar3"></i> {{ b['qty'] }} Nights</span>
+                    {% endif %}
+                  </div>
+                  
+                  <span class="status-badge status-{{ 'confirmed' if b['status'] == 'CONFIRMED' else 'cancelled' }}">
+                    {{ b['status'] }}
+                  </span>
+                </div>
 
-                {% if b['status'] != 'CANCELLED' %}
+                <div class="col-md-4 text-end">
+                  {% if b['status'] != 'CANCELLED' %}
                     <form action="{{ b['action'] }}" method="post">
-                        <input type="hidden" name="cancel_id" value="{{ b['id'] }}">
-                        <input type="hidden" name="mobile_no" value="{{ mobile }}">
-                        <button type="submit" class="cancel-btn" onclick="return confirm('Do you want to cancel this {{ b['type'] }} booking?');">
-                            Cancel {{ b['type'] }}
-                        </button>
+                      <input type="hidden" name="cancel_id" value="{{ b['id'] }}">
+                      <input type="hidden" name="mobile_no" value="{{ mobile }}">
+                      <button type="submit" class="cancel-btn" onclick="return confirm('Cancel this {{ b['type'] }} booking?');">
+                        Cancel Booking
+                      </button>
                     </form>
-                {% endif %}
+                  {% endif %}
+                </div>
+              </div>
             </div>
-        {% endfor %}
-    {% else %}
-        <div class="no-booking">
-            <img src="https://cdni.iconscout.com/illustration/premium/thumb/no-data-found-8867280-7265556.png" width="200" style="display:block; margin: 0 auto;">
-            <h3>No Bookings Found for {{ mobile }}</h3>
-            <p>You haven't made any travel plans yet.</p>
+          </div>
+          {% endfor %}
         </div>
-    {% endif %}
+      {% else %}
+        <div class="col-lg-6 mx-auto no-results" data-aos="zoom-in">
+          <i class="bi bi-search text-muted display-1"></i>
+          <h4 class="mt-3">No bookings found</h4>
+          <p class="text-muted">We couldn't find any trips associated with the number {{ mobile }}.</p>
+          <a href="/mybooking.html" class="btn btn-outline-primary mt-2">Try Another Number</a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
 
-    <a href="/dashboard.html" class="back-link">Back to Dashboard</a>
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container py-4 text-center">
+      <div class="copyright small text-secondary">
+        &copy; Copyright <strong><span>Trip Connect</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/assets/vendor/aos/aos.js"></script>
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    AOS.init();
+  </script>
 
 </body>
 </html>

@@ -1,28 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>My Booking</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>My Bookings - Trip Connect</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/static/assets/css/style.css" rel="stylesheet">
+
+  <style>
+    body { background: #f8f9fa; }
+    #header { background: rgba(20, 30, 48, 0.9); }
+    
+    .hero-track {
+      width: 100%;
+      height: 70vh;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1464047736614-af63643285bf?auto=format&fit=crop&w=1600&q=80') center center;
+      background-size: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 80px;
+    }
+
+    .track-container {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(15px);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 45px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 500px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .track-container h2 {
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    .btn-track {
+      background: #ff7a18;
+      color: #fff;
+      padding: 12px 30px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      transition: 0.3s;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .btn-track:hover {
+      background: #ff8b33;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 122, 24, 0.4);
+    }
+
+    .input-icon {
+      position: relative;
+    }
+
+    .input-icon i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #ff7a18;
+    }
+
+    .input-icon input {
+      padding-left: 45px;
+      height: 55px;
+      border-radius: 10px;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.9);
+    }
+  </style>
 </head>
+
 <body>
-<div id="track" style="padding:30px; text-align:center;">
 
-  <h2>Check Your Booking</h2>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="/">Trip Connect</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link active" href="/mybooking.html">My Bookings</a></li>
+          <li><a class="nav-link" href="/first">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-  <form action="ViewBookings" method="get" style="margin-top:20px;">
-    
-    <input type="text" name="mobile" placeholder="Enter Mobile Number" required 
-           style="padding:10px; width:250px; border-radius:8px; border:1px solid #ccc;">
-    
-    <br><br>
-    
-    <button type="submit" 
-            style="padding:10px 20px; background:red; color:white; border:none; border-radius:8px;">
-      View My Bookings
-    </button>
+  <!-- ======= Hero Track ======= -->
+  <section class="hero-track">
+    <div class="container" data-aos="zoom-in">
+      <div class="track-container mx-auto">
+        <h2>Your Travel History</h2>
+        <p class="text-white mb-4">Enter your mobile number to view and manage your booked trips.</p>
+        
+        <form action="/ViewBookings" method="POST">
+          <div class="input-icon mb-3">
+            <i class="bi bi-phone-fill"></i>
+            <input type="text" name="mobile_no" class="form-control" placeholder="Mobile Number (e.g. 9876543210)" required>
+          </div>
+          <button type="submit" class="btn-track">Track My Bookings</button>
+        </form>
+      </div>
+    </div>
+  </section>
 
-  </form>
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container py-4 text-center text-secondary small">
+      &copy; Copyright <strong><span>Trip Connect</span></strong>. All Rights Reserved
+    </div>
+  </footer>
 
-</div>
+  <!-- Vendor JS Files -->
+  <script src="/static/assets/vendor/aos/aos.js"></script>
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    AOS.init();
+  </script>
+
 </body>
 </html>
