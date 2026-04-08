@@ -1,156 +1,134 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
-<title>My Bookings</title>
+    <title>My Bookings</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f4f6f9;
+            padding-bottom: 50px;
+        }
 
-<style>
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #f4f6f9;
-}
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+            color: #333;
+        }
 
-h2 {
-    text-align: center;
-    margin-top: 20px;
-}
+        .card {
+            width: 500px;
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
+        }
 
-.card {
-    width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border-radius: 15px;
-    background: white;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: 0.3s;
-}
+        .type-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
 
-.card:hover {
-    transform: translateY(-5px);
-}
+        .type-bus { background: #e3f2fd; color: #1976d2; }
+        .type-car { background: #f3e5f5; color: #7b1fa2; }
+        .type-hotel { background: #fff3e0; color: #e65100; }
 
-.cancel-btn {
-    display: block;
-    margin: 15px auto 0;
-    padding: 10px 20px;
-    background: linear-gradient(45deg, #ff4b2b, #ff416c);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-}
+        h3 { margin-top: 0; color: #2c3e50; }
+        p { margin: 8px 0; font-size: 14px; color: #555; }
+        
+        .status { font-weight: bold; }
 
-.no-booking {
-    text-align: center;
-    color: red;
-    margin-top: 30px;
-}
-</style>
+        .cancel-btn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
+        .cancel-btn:hover {
+            opacity: 0.9;
+            transform: scale(0.98);
+        }
+
+        .no-booking {
+            text-align: center;
+            color: #666;
+            margin-top: 50px;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
 </head>
-
 <body>
 
-<h2>My Bookings</h2>
+    <h2>My Booking History</h2>
 
-<%
-ArrayList<String[]> list = (ArrayList<String[]>) request.getAttribute("history");
+    {% if history %}
+        {% for b in history %}
+            <div class="card">
+                <span class="type-tag type-{{ b['type']|lower }}">{{ b['type'] }}</span>
+                
+                <h3>{{ b['service'] }}</h3>
+                
+                {% if b['type'] == 'Bus' %}
+                    <p><b>Route:</b> {{ b['from_loc'] }} to {{ b['to_loc'] }}</p>
+                    <p><b>Date:</b> {{ b['date_val'] }}</p>
+                    <p><b>Passengers:</b> {{ b['qty'] }}</p>
+                {% elif b['type'] == 'Car' %}
+                    <p><b>City:</b> {{ b['from_loc'] }}</p>
+                    <p><b>Days:</b> {{ b['qty'] }}</p>
+                {% else %}
+                    <p><b>Location:</b> {{ b['from_loc'] if b['from_loc'] else 'Various' }}</p>
+                    <p><b>Check-in:</b> {{ b['date_val'] }}</p>
+                    <p><b>Days:</b> {{ b['qty'] }}</p>
+                {% endif %}
 
-if(list != null && !list.isEmpty()){
-    for(String[] b : list){
-%>
+                <p><b>Status:</b> 
+                    <span class="status" style="color: {{ 'green' if b['status'] == 'CONFIRMED' else 'red' }};">
+                        {{ b['status'] }}
+                    </span>
+                </p>
 
-<div class="card">
-
-<% if(b[0].equals("BUS")) { %>
-
-    <!--BUS -->
-    <h3>{{ b[1] }}</h3>
-    <p><b>Route:</b> {{ b[2] }}  {{ b[3] }}</p>
-    <p><b>Date:</b> {{ b[4] }}</p>
-    <p><b>Passengers:</b> {{ b[5] }}</p>
-
-    <p><b>Status:</b> 
-        <span style="color:{{ b[6].equals("CONFIRMED") ? "green" : "red" }};">
-            {{ b[6] }}
-        </span>
-    </p>
-
-    <% if(!b[6].equals("CANCELLED")) { %>
-    <form action="CancelBooking" method="post">
-        <input type="hidden" name="bookingId" value="{{ b[7] }}">
-        <input type="hidden" name="busId" value="{{ b[8] }}">
-        <input type="hidden" name="passengers" value="{{ b[5] }}">
-
-        <button type="submit" class="cancel-btn"
-        onclick="return confirm('Cancel this booking?');">
-            Cancel Booking
-        </button>
-    </form>
+                {% if b['status'] != 'CANCELLED' %}
+                    <form action="{{ b['action'] }}" method="post">
+                        <input type="hidden" name="cancel_id" value="{{ b['id'] }}">
+                        <input type="hidden" name="mobile_no" value="{{ mobile }}">
+                        <button type="submit" class="cancel-btn" onclick="return confirm('Do you want to cancel this {{ b['type'] }} booking?');">
+                            Cancel {{ b['type'] }}
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-booking">
+            <img src="https://cdni.iconscout.com/illustration/premium/thumb/no-data-found-8867280-7265556.png" width="200" style="display:block; margin: 0 auto;">
+            <h3>No Bookings Found for {{ mobile }}</h3>
+            <p>You haven't made any travel plans yet.</p>
+        </div>
     {% endif %}
 
-<% } else if(b[0].equals("CAR")) { %>
-
-<!--  CAR -->
-<h3> {{ b[1] }}</h3>
-<p><b>City:</b> {{ b[2] }}</p>
-<p><b>Days:</b> {{ b[3] }}</p>
-
-<p><b>Status:</b> 
-    <span style="color:{{ b[4].equals("CONFIRMED") ? "green" : "red" }};">
-        {{ b[4] }}
-    </span>
-</p>
-
-<% if(!b[4].equals("CANCELLED")) { %>
-<form action="CancelCarBooking" method="post">
-    <input type="hidden" name="bookingId" value="{{ b[5] }}">
-    <input type="hidden" name="carId" value="{{ b[6] }}">
-
-    <button type="submit" class="cancel-btn"
-    onclick="return confirm('Cancel this car booking?');">
-        Cancel Car
-    </button>
-</form>
-{% endif %}
-
-<% }else{ %>
-
-    <!--  HOTEL -->
-    <h3> {{ b[1] }}</h3>
-    <p><b>Check-in:</b> {{ b[2] }}</p>
-    <p><b>Check-out:</b> {{ b[3] }}</p>
-
-    <p><b>Status:</b> 
-        <span style="color:{{ b[6].equals("CONFIRMED") ? "green" : "red" }};">
-            {{ b[6] }}
-        </span>
-    </p>
-    
-    <% if(!b[6].equals("CANCELLED")) { %>
-    <form action="CancelHotelBooking" method="post">
-        <input type="hidden" name="bookingId" value="{{ b[7] }}">
-
-        <button type="submit" class="cancel-btn"
-        onclick="return confirm('Cancel this hotel booking?');">
-            Cancel Hotel
-        </button>
-    </form>
-    {% endif %}
-
-{% endif %}
-
-</div>
-
-<%
-    }
-}else{
-%>
-
-<h3 class="no-booking">No Bookings Found</h3>
-
-{% endif %}
+    <a href="/dashboard.html" class="back-link">Back to Dashboard</a>
 
 </body>
 </html>
