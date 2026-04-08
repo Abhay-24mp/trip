@@ -44,6 +44,7 @@ def dashboard():
     return render_template('dashboard.html')
 
 @app.route('/buses.html')
+@app.route('/busindex.html')
 def buses_page():
     return render_template('busindex.html')
 
@@ -306,6 +307,7 @@ def cancel_car_booking():
 # HOTELS
 
 @app.route('/hotels', methods=['GET', 'POST'])
+@app.route('/hotels.html', methods=['GET', 'POST'])
 def hotels_page():
     con = get_db_connection()
     hotels = []
