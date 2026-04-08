@@ -55,6 +55,16 @@ def cars_page():
 def mybooking_page():
     return render_template('mybooking.html')
 
+@app.route('/busForm')
+def bus_form_page():
+    return render_template('busForm.html')
+
+@app.route('/first')
+def first_page():
+    # Clear session if logout behavior is desired
+    session.clear()
+    return render_template('first.html')
+
 # AUTH PORTION
 
 @app.route('/Ureg', methods=['POST'])
