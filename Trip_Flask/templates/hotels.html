@@ -165,7 +165,7 @@ border-radius:8px;
 <option 
 value="{{ h.name }}" 
 data-price="{{ h.price }}"
-{{ h.get("name").equals(selectedHotel) ? "selected" : "" }}>
+{{ 'selected' if h.name == selected_hotel else '' }}>
 {{ h.name }}
 </option>
 
