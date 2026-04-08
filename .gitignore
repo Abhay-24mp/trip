@@ -1,0 +1,12 @@
+.DS_Store
+.metadata/
+Servers/
+**/__pycache__/
+Trip/build/
+.settings/
+.project
+.classpath
+*.pyc
+*.pyo
+venv/
+.env

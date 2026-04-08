@@ -1,0 +1,158 @@
+<%@ page import="java.util.*" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Bookings</title>
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f9;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.card {
+    width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.cancel-btn {
+    display: block;
+    margin: 15px auto 0;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #ff4b2b, #ff416c);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.no-booking {
+    text-align: center;
+    color: red;
+    margin-top: 30px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>My Bookings</h2>
+
+<%
+ArrayList<String[]> list = (ArrayList<String[]>) request.getAttribute("history");
+
+if(list != null && !list.isEmpty()){
+    for(String[] b : list){
+%>
+
+<div class="card">
+
+<% if(b[0].equals("BUS")) { %>
+
+    <!--BUS -->
+    <h3><%= b[1] %></h3>
+    <p><b>Route:</b> <%= b[2] %>  <%= b[3] %></p>
+    <p><b>Date:</b> <%= b[4] %></p>
+    <p><b>Passengers:</b> <%= b[5] %></p>
+
+    <p><b>Status:</b> 
+        <span style="color:<%= b[6].equals("CONFIRMED") ? "green" : "red" %>;">
+            <%= b[6] %>
+        </span>
+    </p>
+
+    <% if(!b[6].equals("CANCELLED")) { %>
+    <form action="CancelBooking" method="post">
+        <input type="hidden" name="bookingId" value="<%= b[7] %>">
+        <input type="hidden" name="busId" value="<%= b[8] %>">
+        <input type="hidden" name="passengers" value="<%= b[5] %>">
+
+        <button type="submit" class="cancel-btn"
+        onclick="return confirm('Cancel this booking?');">
+            Cancel Booking
+        </button>
+    </form>
+    <% } %>
+
+<% } else if(b[0].equals("CAR")) { %>
+
+<!--  CAR -->
+<h3> <%= b[1] %></h3>
+<p><b>City:</b> <%= b[2] %></p>
+<p><b>Days:</b> <%= b[3] %></p>
+
+<p><b>Status:</b> 
+    <span style="color:<%= b[4].equals("CONFIRMED") ? "green" : "red" %>;">
+        <%= b[4] %>
+    </span>
+</p>
+
+<% if(!b[4].equals("CANCELLED")) { %>
+<form action="CancelCarBooking" method="post">
+    <input type="hidden" name="bookingId" value="<%= b[5] %>">
+    <input type="hidden" name="carId" value="<%= b[6] %>">
+
+    <button type="submit" class="cancel-btn"
+    onclick="return confirm('Cancel this car booking?');">
+        Cancel Car
+    </button>
+</form>
+<% } %>
+
+<% }else{ %>
+
+    <!--  HOTEL -->
+    <h3> <%= b[1] %></h3>
+    <p><b>Check-in:</b> <%= b[2] %></p>
+    <p><b>Check-out:</b> <%= b[3] %></p>
+
+    <p><b>Status:</b> 
+        <span style="color:<%= b[6].equals("CONFIRMED") ? "green" : "red" %>;">
+            <%= b[6] %>
+        </span>
+    </p>
+    
+    <% if(!b[6].equals("CANCELLED")) { %>
+    <form action="CancelHotelBooking" method="post">
+        <input type="hidden" name="bookingId" value="<%= b[7] %>">
+
+        <button type="submit" class="cancel-btn"
+        onclick="return confirm('Cancel this hotel booking?');">
+            Cancel Hotel
+        </button>
+    </form>
+    <% } %>
+
+<% } %>
+
+</div>
+
+<%
+    }
+}else{
+%>
+
+<h3 class="no-booking">No Bookings Found</h3>
+
+<%
+}
+%>
+
+</body>
+</html>

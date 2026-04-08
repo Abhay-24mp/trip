@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Trip Connect Car Rental</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:#f5f5f5;
+}
+
+/* NAVBAR */
+
+nav{
+background:#fff;
+padding:15px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+nav h1{
+color:#0077ff;
+}
+
+nav ul{
+list-style:none;
+display:flex;
+gap:20px;
+}
+
+nav ul li a{
+text-decoration:none;
+color:#333;
+font-weight:bold;
+}
+
+/* HERO */
+
+.hero{
+height:60vh;
+background:url("https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80");
+background-size:cover;
+background-position:center;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.search-box{
+background:white;
+padding:25px;
+border-radius:10px;
+width:80%;
+max-width:700px;
+text-align:center;
+}
+
+.search-box input{
+padding:10px;
+margin:8px;
+width:30%;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+.search-box button{
+padding:10px 20px;
+background:#0077ff;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* CAR SECTION */
+
+.cars{
+padding:40px;
+}
+
+.cars h2{
+text-align:center;
+margin-bottom:30px;
+}
+
+.car-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+}
+
+.car-card{
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.car-card img{
+width:100%;
+height:160px;
+object-fit:cover;
+}
+
+.car-info{
+padding:15px;
+}
+
+.price{
+color:#0077ff;
+font-weight:bold;
+margin-top:10px;
+}
+
+.car-info button{
+margin-top:10px;
+padding:10px;
+width:100%;
+background:#0077ff;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:40px;
+background:#111;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<nav>
+
+<h1>Trip Connect Car</h1>
+
+<ul>
+<li><a href="dashboard.html">Dashboard</a></li>
+<li><a href="first.jsp">Logout</a></li>
+
+</ul>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="search-box">
+
+<h2>Find Your Rental Car</h2>
+
+<form action="SearchCar" method="get">
+<input type="text" name="city" placeholder="Pickup City">
+<input type="date">
+<input type="date">
+
+<br>
+
+<button type="submit">Search</button>
+</form>
+</div>
+
+</section>
+
+<!-- CAR LIST -->
+
+<section class="cars">
+
+<h2>Available Cars</h2>
+
+<div class="car-grid">
+
+<div class="car-card">
+
+<img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=800&q=80">
+
+<div class="car-info">
+
+<h3>Hyundai Creta</h3>
+
+<p>Automatic • Petrol • 5 Seats</p>
+
+<p class="price">₹2200 / day</p>
+
+<button onClick="bookCar('Hyundai Creta')">Book Now</button>
+
+</div>
+
+</div>
+
+<div class="car-card">
+
+<img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?auto=format&fit=crop&w=800&q=80">
+
+<div class="car-info">
+
+<h3>Maruti Swift</h3>
+
+<p>Manual • Petrol • 5 Seats</p>
+
+<p class="price">₹1200 / day</p>
+
+<button onClick="bookCar('Maruti Swift')">Book Now</button>
+
+</div>
+
+</div>
+
+<div class="car-card">
+
+<img src="https://imgd.aeplcdn.com/370x208/n/cw/ec/134287/city-exterior-right-front-three-quarter-2.png?isig=0&q=80">
+
+<div class="car-info">
+
+<h3>Honda City</h3>
+
+<p>Automatic • Petrol • 5 Seats</p>
+
+<p class="price">₹2500 / day</p>
+
+<button onClick="bookCar('Honda City')">Book Now</button>
+
+</div>
+
+</div>
+
+<div class="car-card">
+
+<img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80">
+
+<div class="car-info">
+
+<h3>Mahindra Thar</h3>
+
+<p>Manual • Diesel • 4 Seats</p>
+
+<p class="price">₹3000 / day</p>
+
+<button onClick="bookCar('Mahindra Thar')">Book Now</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>© 2026 Trip Connect Car Rental</p>
+
+</footer>
+
+<script>
+
+function searchCar(){
+alert("Search feature demo (frontend only)");
+}
+
+function bookCar(car){
+alert("Booking confirmed for " + car);
+}
+
+</script>
+
+</body>
+
+</html>
