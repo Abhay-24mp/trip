@@ -18,15 +18,16 @@ def setup_database():
         conn = mysql.connector.connect(**DB_CONFIG)
         cursor = conn.cursor()
         
-        # 2. Create Database
-        print(f"Creating database '{DB_NAME}' if it doesn't exist...")
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
+        # 2. Recreate Database to ensure clean slate
+        print(f"Dropping and recreating database '{DB_NAME}'...")
+        cursor.execute(f"DROP DATABASE IF EXISTS {DB_NAME}")
+        cursor.execute(f"CREATE DATABASE {DB_NAME}")
         cursor.execute(f"USE {DB_NAME}")
         
-        # 3. Define Schemas
+        # 3. Define Schemas aligned perfectly with app.py expectations
         tables = {
             'users': """
-                CREATE TABLE IF NOT EXISTS users (
+                CREATE TABLE users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
                     email VARCHAR(255) NOT NULL UNIQUE,
@@ -34,7 +35,7 @@ def setup_database():
                 )
             """,
             'buses': """
-                CREATE TABLE IF NOT EXISTS buses (
+                CREATE TABLE buses (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     bus_name VARCHAR(255) NOT NULL,
                     from_city VARCHAR(255) NOT NULL,
@@ -44,11 +45,11 @@ def setup_database():
                     type VARCHAR(50),
                     arr_time TIME,
                     dep_time TIME,
-                    price DECIMAL(10, 2)
+                    price INT
                 )
             """,
             'busbookings': """
-                CREATE TABLE IF NOT EXISTS busbookings (
+                CREATE TABLE busbookings (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
                     mobile VARCHAR(20) NOT NULL,
@@ -59,18 +60,18 @@ def setup_database():
                 )
             """,
             'cars': """
-                CREATE TABLE IF NOT EXISTS cars (
+                CREATE TABLE cars (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     car_name VARCHAR(255) NOT NULL,
                     type VARCHAR(50),
-                    price DECIMAL(10, 2),
+                    price INT,
                     seats INT,
                     city VARCHAR(255),
-                    available INT DEFAULT 1
+                    available INT DEFAULT 5
                 )
             """,
             'carbookings': """
-                CREATE TABLE IF NOT EXISTS carbookings (
+                CREATE TABLE carbookings (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
                     mobile VARCHAR(20) NOT NULL,
@@ -82,18 +83,18 @@ def setup_database():
                 )
             """,
             'hotels': """
-                CREATE TABLE IF NOT EXISTS hotels (
+                CREATE TABLE hotels (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     name VARCHAR(255) NOT NULL,
                     location VARCHAR(255) NOT NULL,
-                    price_per_night DECIMAL(10, 2),
+                    price_per_night INT,
                     max_guests INT DEFAULT 2,
                     description TEXT,
                     rating DECIMAL(2, 1) DEFAULT 4.0
                 )
             """,
             'bookings': """
-                CREATE TABLE IF NOT EXISTS bookings (
+                CREATE TABLE bookings (
                     id INT AUTO_INCREMENT PRIMARY KEY,
                     fullname VARCHAR(255) NOT NULL,
                     email VARCHAR(255) NOT NULL,
@@ -113,41 +114,36 @@ def setup_database():
             cursor.execute(schema)
             
         # 4. Insert Sample Data
-        print("Seeding sample data...")
+        print("Seeding fresh sample data...")
         
-        # Sample Buses
-        cursor.execute("SELECT COUNT(*) FROM buses")
-        if cursor.fetchone()[0] == 0:
-            today = datetime.now().date()
-            bus_data = [
-                ('Shivneri', 'Pune', 'Mumbai', today + timedelta(days=1), 40, 'AC Sleeper', '10:00:00', '14:00:00', 550.00),
-                ('Neeta Travels', 'Mumbai', 'Pune', today + timedelta(days=1), 35, 'Non-AC', '08:00:00', '11:00:00', 400.00),
-                ('Purple Travels', 'Pune', 'Delhi', today + timedelta(days=2), 40, 'AC Seater', '18:00:00', '10:00:00', 2500.00)
-            ]
-            cursor.executemany("INSERT INTO buses (bus_name, from_city, to_city, travel_date, seats_available, type, arr_time, dep_time, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", bus_data)
+        today = datetime.now().date()
+        
+        # Buses: (id, name, from, to, date, seats, type, arr, dep, price)
+        bus_data = [
+            ('Shivneri', 'Pune', 'Mumbai', today + timedelta(days=1), 40, 'AC Sleeper', '14:00:00', '10:00:00', 550),
+            ('Neeta Travels', 'Mumbai', 'Pune', today + timedelta(days=1), 35, 'Semi-Luxury', '11:00:00', '08:00:00', 400),
+            ('Purple Travels', 'Pune', 'Delhi', today + timedelta(days=2), 40, 'AC Seater', '10:00:00', '18:00:00', 2500)
+        ]
+        cursor.executemany("INSERT INTO buses (bus_name, from_city, to_city, travel_date, seats_available, type, arr_time, dep_time, price) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", bus_data)
 
-        # Sample Cars
-        cursor.execute("SELECT COUNT(*) FROM cars")
-        if cursor.fetchone()[0] == 0:
-            car_data = [
-                ('Swift Dzire', 'Sedan', 2000.00, 4, 'Pune', 5),
-                ('Innova Crysta', 'SUV', 4500.00, 7, 'Mumbai', 3),
-                ('Honda City', 'Sedan', 2500.00, 4, 'Delhi', 4)
-            ]
-            cursor.executemany("INSERT INTO cars (car_name, type, price, seats, city, available) VALUES (%s, %s, %s, %s, %s, %s)", car_data)
+        # Cars: (id, name, type, price, seats, city, available)
+        car_data = [
+            ('Swift Dzire', 'Sedan', 2000, 4, 'Pune', 5),
+            ('Innova Crysta', 'SUV', 4500, 7, 'Mumbai', 3),
+            ('Honda City', 'Sedan', 2500, 4, 'Delhi', 4)
+        ]
+        cursor.executemany("INSERT INTO cars (car_name, type, price, seats, city, available) VALUES (%s, %s, %s, %s, %s, %s)", car_data)
 
-        # Sample Hotels
-        cursor.execute("SELECT COUNT(*) FROM hotels")
-        if cursor.fetchone()[0] == 0:
-            hotel_data = [
-                ('JW Marriott', 'Pune', 8500.00, 2, 'Luxury stay in the heart of Pune', 4.8),
-                ('Taj Lands End', 'Mumbai', 15000.00, 2, 'Iconic luxury hotel with sea view', 4.9),
-                ('The Oberoi', 'Delhi', 12000.00, 2, 'Fine dining and premium rooms', 4.7)
-            ]
-            cursor.executemany("INSERT INTO hotels (name, location, price_per_night, max_guests, description, rating) VALUES (%s, %s, %s, %s, %s, %s)", hotel_data)
+        # Hotels
+        hotel_data = [
+            ('JW Marriott', 'Pune', 8500, 2, 'Luxury stay in Pune', 4.8),
+            ('Taj Lands End', 'Mumbai', 15000, 2, 'Sea view luxury', 4.9),
+            ('The Oberoi', 'Delhi', 12000, 2, 'Premium hospitality', 4.7)
+        ]
+        cursor.executemany("INSERT INTO hotels (name, location, price_per_night, max_guests, description, rating) VALUES (%s, %s, %s, %s, %s, %s)", hotel_data)
 
         conn.commit()
-        print("\nDatabase setup completed successfully!")
+        print("\nDatabase synchronization completed successfully!")
         
     except mysql.connector.Error as err:
         print(f"Error: {err}")
