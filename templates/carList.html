@@ -1,0 +1,95 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Available Cars</title>
+
+<style>
+body { font-family: Arial; background:#f4f6f9; }
+.card {
+    width:600px;
+    margin:20px auto;
+    padding:15px;
+    background:#fff;
+    border-radius:10px;
+}
+input { margin:5px; padding:5px; }
+button {
+    background:green;
+    color:white;
+    padding:8px 15px;
+    border:none;
+}
+</style>
+
+<script>
+function updateTotal(carId, price){
+
+    let days = document.getElementById("days_" + carId).value;
+
+    let total = days * price;
+
+    document.getElementById("total_" + carId).value = total + " ";
+}
+</script>
+
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Available Cars</h2>
+
+{% if cars %}
+{% for c in cars %}
+{% set price = c[3]|int %}
+
+<div class="card">
+
+    <h3>{{ c[1] }}</h3>
+    <p><b>City:</b> {{ c[5] }}</p>
+    <p><b>Seats:</b> {{ c[4] }}</p>
+    <p><b>Type:</b> {{ c[2] }}</p>
+
+    <!--  PRICE -->
+    <p><b>Price:</b> {{ price }} / day</p>
+
+    <!--  BOOK FORM -->
+    <form action="CarBooking" method="post">
+
+        <input type="hidden" name="carId" value="{{ c[0] }}">
+        <input type="hidden" name="price" value="{{ price }}">
+
+        Name: <input type="text" name="name" required><br>
+        Mobile: <input type="text" name="mobile" required><br>
+
+        <!--  DAYS -->
+        Days:
+        <input type="number"
+               id="days_{{ c[0] }}"
+               name="days"
+               value="1"
+               min="1"
+               onchange="updateTotal('{{ c[0] }}', {{ price }})"><br>
+
+        <!--  TOTAL -->
+        Total:
+        <input type="text"
+               id="total_{{ c[0] }}"
+               value="{{ price }}"
+               readonly><br>
+
+        <button type="submit">Book Car</button>
+    </form>
+
+</div>
+
+{% endfor %}
+{% else %}
+
+<h3 style="text-align:center;color:red;">No Cars Found</h3>
+
+{% endif %}
+
+</body>
+</html>

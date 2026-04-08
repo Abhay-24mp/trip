@@ -1,0 +1,229 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TripConnect</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"/>
+
+<style>
+/* ✅ SAME CSS (NO CHANGE) */
+* { margin:0; padding:0; box-sizing:border-box; font-family:"Poppins",sans-serif;}
+body { background:#f5f7fa; color:#222;}
+
+.navbar { display:flex; justify-content:space-between; padding:15px 40px;
+background:rgba(255,255,255,0.2); backdrop-filter:blur(12px); position:sticky; top:0;}
+
+.hero {
+height:90vh;
+background:url("https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?q=80&w=3432&auto=format&fit=crop") center/cover no-repeat;
+display:flex; justify-content:center; align-items:center;
+}
+
+.search-box {
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(15px);
+padding:25px;
+border-radius:20px;
+text-align:center;
+}
+
+.search-box input,.search-box select {
+padding:12px; margin:8px; border:none; border-radius:8px; width:180px;
+}
+
+.search-box button {
+padding:12px 20px; border:none; border-radius:8px;
+background:#ff7a18; color:white; cursor:pointer;
+}
+
+.container { padding:40px;}
+
+.hotel-list {
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:25px;
+}
+
+.card {
+background:white; border-radius:15px; overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+.card:hover { transform:translateY(-10px) scale(1.02);}
+
+.card img { width:100%; height:200px; object-fit:cover;}
+
+.card-content { padding:15px;}
+.price { color:#ff7a18; font-weight:600;}
+
+.btn {
+margin-top:10px; display:inline-block;
+padding:10px 15px;
+background:#ff7a18; color:white;
+border-radius:8px; text-decoration:none;
+}
+
+.form {
+margin-top:60px;
+background:white;
+padding:25px;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.form input,.form select {
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.form button {
+width:100%;
+padding:12px;
+background:#ff7a18;
+color:white;
+border:none;
+border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+  <h2>TripConnect</h2>
+  <p>Explore Hotels</p>
+  <a href="dashboard.html">Dashboard</a>
+</div>
+
+<!-- 🔍 SEARCH -->
+<form action="HotelSearch" method="post">
+<section class="hero">
+<div class="search-box">
+<input type="text" name="location" placeholder="Location" required/>
+<input type="date" name="checkin" required />
+<input type="date" name="checkout" required/>
+
+<select name="guests">
+<option value="1">1 Guest</option>
+<option value="2">2 Guests</option>
+<option value="3">3 Guests</option>
+</select>
+
+<br>
+<button type="submit">Search</button>
+</div>
+</section>
+</form>
+
+<!-- 🔥 DB FETCH -->
+
+
+<!-- 🏨 HOTEL LIST -->
+<div class="container">
+<h2>Popular Hotels</h2>
+
+<div class="hotel-list">
+{% for h in hotels %}
+
+<div class="card">
+<img src="{{ h.image }}" />
+<div class="card-content">
+<h3>{{ h.name }}</h3>
+<p>{{ h.location }}</p>
+<p class="price">{{ h.price }} / night</p>
+
+<!-- 🔥 AUTO FILL BOOK -->
+<a href="hotels?hotel={{ h.name }}" class="btn">Book Now</a>
+
+</div>
+</div>
+
+{% endfor %}
+</div>
+
+<!-- 🧾 BOOKING FORM -->
+<form action="HotelBooking" method="post">
+<div class="form">
+<h2>Book Your Stay</h2>
+
+<input type="text" name="fullname" placeholder="Full Name" required />
+<input type="email" name="email" placeholder="Email" required />
+<input type="number" name="mobile" placeholder="Phone" required />
+
+<!-- 🔥 AUTO SELECT HOTEL -->
+<select name="hotelName" required onchange="updateAll()">
+
+{% for h in hotels %}
+
+<option 
+value="{{ h.name }}" 
+data-price="{{ h.price }}"
+{{ h.get("name").equals(selectedHotel) ? "selected" : "" }}>
+{{ h.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<!-- 💰 RENT -->
+<input type="text" id="rent" placeholder="Rent per night" readonly />
+
+<!-- 📅 DATES -->
+<input type="date" id="checkin" name="checkin" required onchange="updateAll()" />
+<input type="date" id="checkout" name="checkout" required onchange="updateAll()" />
+
+<!-- 📆 TOTAL DAYS -->
+<input type="text" id="days" placeholder="Total Days" readonly />
+
+<!-- 💸 TOTAL AMOUNT -->
+<input type="text" id="total" placeholder="Total Amount" readonly />
+
+<button type="submit">Confirm Booking</button>
+</div>
+</form>
+
+</div>
+
+</body>
+<script>
+function updateAll() {
+
+    let select = document.querySelector("select[name='hotelName']");
+    let price = parseInt(select.options[select.selectedIndex].getAttribute("data-price")) || 0;
+
+    // rent show
+    document.getElementById("rent").value = price + " / night";
+
+    let checkin = document.getElementById("checkin").value;
+    let checkout = document.getElementById("checkout").value;
+
+    if(checkin && checkout){
+        let d1 = new Date(checkin);
+        let d2 = new Date(checkout);
+
+        let diff = (d2 - d1) / (1000 * 60 * 60 * 24);
+
+        if(diff > 0){
+            document.getElementById("days").value = diff + " Days";
+
+            let total = diff * price;
+            document.getElementById("total").value = total ;
+        } else {
+            document.getElementById("days").value = "";
+            document.getElementById("total").value = "";
+        }
+    }
+}
+
+// page load pe auto run
+window.onload = updateAll;
+</script>
+</html>

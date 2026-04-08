@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify OTP</title>
+</head>
+<body style="text-align:center; margin-top:100px;">
+
+<h2>Verify OTP</h2>
+
+<form action="VerifyOTP" method="post">
+    <input type="text" name="otp" placeholder="Enter OTP" required><br><br>
+    <input type="password" name="newpass" placeholder="New Password" required><br><br>
+
+    <button type="submit">Verify & Reset</button>
+</form>
+
+</body>
+</html>

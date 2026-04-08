@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trip Connect - Bus Search</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+        }
+        .search-box {
+            width: 600px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: space-between;
+        }
+        input {
+            padding: 10px;
+            width: 30%;
+        }
+        button {
+            padding: 10px 20px;
+            background: red;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="search-box">
+
+    <form action="SearchBus" method="get" style="display:flex; width:100%; gap:10px;">
+        
+        <input type="text" name="from" placeholder="From" required>
+
+        <input type="text" name="to" placeholder="To" required>
+
+        <input type="date" name="date" required>
+        
+        
+
+        <button type="submit">Search Buses</button>
+
+    </form>
+
+</div>
+
+</body>
+</html>
