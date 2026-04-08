@@ -99,12 +99,22 @@
         <form action="/SearchBus" method="post">
           <div class="row g-3">
             <div class="col-md-4">
-              <label class="form-label text-white">Departure City</label>
-              <input type="text" name="from" class="form-control" placeholder="From (e.g. Pune)" required>
+              <label class="form-label text-white small">Departure City</label>
+              <select name="from" class="form-select" required>
+                <option value="" disabled selected>Select City</option>
+                {% for city in from_cities %}
+                  <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+              </select>
             </div>
             <div class="col-md-4">
-                <label class="form-label text-white">Destination City</label>
-              <input type="text" name="to" class="form-control" placeholder="To (e.g. Mumbai)" required>
+              <label class="form-label text-white small">Destination City</label>
+              <select name="to" class="form-select" required>
+                <option value="" disabled selected>Select City</option>
+                {% for city in to_cities %}
+                  <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+              </select>
             </div>
             <div class="col-md-4">
                 <label class="form-label text-white">Travel Date</label>

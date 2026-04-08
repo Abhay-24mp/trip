@@ -138,7 +138,10 @@
           {% set price = b[9]|int %}
           <div class="col-lg-10 mx-auto" data-aos="fade-up">
             <div class="bus-card row">
-              <div class="col-md-7 bus-info">
+              <div class="col-md-3">
+                <img src="{{ b[10] }}" class="img-fluid rounded shadow-sm" style="height: 120px; width: 100%; object-fit: cover; margin-top: 10px;">
+              </div>
+              <div class="col-md-5 bus-info">
                 <span class="bus-badge">{{ b[6] }}</span>
                 <h3>{{ b[1] }}</h3>
                 <div class="info-grid">

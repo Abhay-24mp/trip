@@ -50,7 +50,17 @@ def buses_page():
 
 @app.route('/cars.html')
 def cars_page():
-    return render_template('cars.html')
+    con = get_db_connection()
+    cities = []
+    if con:
+        cursor = con.cursor()
+        try:
+            cursor.execute("SELECT DISTINCT city FROM cars ORDER BY city")
+            cities = [row[0] for row in cursor.fetchall()]
+        finally:
+            cursor.close()
+            con.close()
+    return render_template('cars.html', cities=cities)
 
 @app.route('/mybooking.html')
 def mybooking_page():
@@ -58,7 +68,21 @@ def mybooking_page():
 
 @app.route('/busForm')
 def bus_form_page():
-    return render_template('busForm.html')
+    con = get_db_connection()
+    from_cities = []
+    to_cities = []
+    if con:
+        cursor = con.cursor()
+        try:
+            cursor.execute("SELECT DISTINCT from_city FROM buses ORDER BY from_city")
+            from_cities = [row[0] for row in cursor.fetchall()]
+            
+            cursor.execute("SELECT DISTINCT to_city FROM buses ORDER BY to_city")
+            to_cities = [row[0] for row in cursor.fetchall()]
+        finally:
+            cursor.close()
+            con.close()
+    return render_template('busForm.html', from_cities=from_cities, to_cities=to_cities)
 
 @app.route('/first')
 def first_page():
@@ -163,13 +187,11 @@ def search_bus():
     if con:
         cursor = con.cursor(dictionary=False) # return list/tuple
         try:
-            query = "SELECT * FROM buses WHERE LOWER(from_city)=LOWER(%s) AND LOWER(to_city)=LOWER(%s) AND seats_available > 0"
+            query = "SELECT id, bus_name, from_city, to_city, travel_date, seats_available, type, arr_time, dep_time, price, image FROM buses WHERE LOWER(from_city)=LOWER(%s) AND LOWER(to_city)=LOWER(%s) AND seats_available > 0"
             cursor.execute(query, (from_city, to_city))
             results = cursor.fetchall()
-            # Format buses to match JSP expectancy (ArrayList of String[])
-            # Assuming DB cols: id(0), name(1), from(2), to(3), date(4), seats(5), type(6), arr_time(7), dep_time(8), price(9)
-            # Make sure all are converted to string for parity w/ template.
             for row in results:
+                # 0: id, 1: name, 2: from, 3: to, 4: date, 5: seats, 6: type, 7: arr, 8: dep, 9: price, 10: image
                 buses.append([str(x) for x in row])
         finally:
             cursor.close()
@@ -246,11 +268,11 @@ def search_car():
     if con:
         cursor = con.cursor()
         try:
-            query = "SELECT * FROM cars WHERE city=%s AND available > 0"
+            query = "SELECT id, car_name, type, price, seats, city, available, image FROM cars WHERE city=%s AND available > 0"
             cursor.execute(query, (city,))
             results = cursor.fetchall()
             for row in results:
-                # 0: id, 1: name, 2: type, 3: price, 4: seats, 5: city
+                # 0: id, 1: name, 2: type, 3: price, 4: seats, 5: city, 6: available, 7: image
                 cars.append([str(x) for x in row])
         finally:
             cursor.close()
@@ -314,8 +336,15 @@ def hotels_page():
     if con:
          cursor = con.cursor(dictionary=True)
          try:
-              cursor.execute("SELECT * FROM hotels")
-              hotels = cursor.fetchall()
+              cursor.execute("SELECT name, location, price_per_night, description, image FROM hotels")
+              for row in cursor.fetchall():
+                  hotels.append({
+                      'name': row['name'],
+                      'location': row['location'],
+                      'price': row['price_per_night'],
+                      'description': row['description'],
+                      'image': row['image'] or 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2670&auto=format&fit=crop'
+                  })
          finally:
               cursor.close()
               con.close()

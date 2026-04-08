@@ -1,95 +1,218 @@
-
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Available Cars</title>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-<style>
-body { font-family: Arial; background:#f4f6f9; }
-.card {
-    width:600px;
-    margin:20px auto;
-    padding:15px;
-    background:#fff;
-    border-radius:10px;
-}
-input { margin:5px; padding:5px; }
-button {
-    background:green;
-    color:white;
-    padding:8px 15px;
-    border:none;
-}
-</style>
+  <title>Available Cars - Trip Connect</title>
 
-<script>
-function updateTotal(carId, price){
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-    let days = document.getElementById("days_" + carId).value;
+  <!-- Vendor CSS Files -->
+  <link href="/static/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
 
-    let total = days * price;
+  <!-- Template Main CSS File -->
+  <link href="/static/assets/css/style.css" rel="stylesheet">
 
-    document.getElementById("total_" + carId).value = total + " ";
-}
-</script>
+  <style>
+    body { background: #f4f6f9; }
+    #header { background: rgba(20, 30, 48, 0.9); position: relative; }
+    
+    .results-container {
+      padding: 60px 0;
+    }
 
+    .car-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+      transition: 0.3s;
+      border-left: 5px solid #ff7a18;
+    }
+
+    .car-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .car-info h3 {
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .car-badge {
+      background: #fff3e0;
+      color: #e65100;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .info-grid {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+
+    .info-item i {
+      color: #ff7a18;
+      margin-right: 8px;
+    }
+
+    .booking-panel {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #eee;
+    }
+
+    .price-tag {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ff7a18;
+    }
+
+    .btn-book {
+      background: #ff7a18;
+      color: #fff;
+      border: none;
+      padding: 10px 25px;
+      border-radius: 5px;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .total-field {
+      font-weight: 700;
+      color: #27ae60;
+      font-size: 18px;
+      border: none;
+      background: transparent;
+      width: 100px;
+    }
+  </style>
+
+  <script>
+    function updateTotal(carId, price) {
+        let days = document.getElementById("days_" + carId).value;
+        let total = days * price;
+        document.getElementById("total_" + carId).value = total + " ₹";
+    }
+  </script>
 </head>
 
 <body>
 
-<h2 style="text-align:center;">Available Cars</h2>
+  <!-- ======= Header ======= -->
+  <header id="header" class="fixed-top header-inner-pages">
+    <div class="container d-flex align-items-center justify-content-between">
+      <h1 class="logo"><a href="/">Trip Connect</a></h1>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a class="nav-link" href="/">Home</a></li>
+          <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link" href="/first">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-{% if cars %}
-{% for c in cars %}
-{% set price = c[3]|int %}
+  <main class="results-container">
+    <div class="container">
+      <h2 class="text-center mb-5 fw-bold" data-aos="fade-up">Available Car Rentals</h2>
 
-<div class="card">
+      {% if cars %}
+        <div class="row">
+          {% for c in cars %}
+          {% set price = c[3]|int %}
+          <div class="col-lg-10 mx-auto" data-aos="fade-up">
+            <div class="car-card row">
+              <div class="col-md-3">
+                <img src="{{ c[7] }}" class="img-fluid rounded shadow-sm" style="height: 140px; width: 100%; object-fit: cover; margin-top: 10px;">
+              </div>
+              <div class="col-md-5 car-info">
+                <span class="car-badge">{{ c[2] }}</span>
+                <h3>{{ c[1] }}</h3>
+                <div class="info-grid">
+                  <div class="info-item"><i class="bi bi-geo-alt-fill"></i>{{ c[5] }}</div>
+                  <div class="info-item"><i class="bi bi-people-fill"></i>{{ c[4] }} Seats</div>
+                </div>
+                <div class="info-grid">
+                  <div class="info-item"><i class="bi bi-check-circle-fill"></i>Available: {{ c[6] }}</div>
+                </div>
+              </div>
 
-    <h3>{{ c[1] }}</h3>
-    <p><b>City:</b> {{ c[5] }}</p>
-    <p><b>Seats:</b> {{ c[4] }}</p>
-    <p><b>Type:</b> {{ c[2] }}</p>
+              <div class="col-md-4">
+                <div class="booking-panel">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-muted">Price per day</span>
+                        <span class="price-tag">₹ {{ price }}</span>
+                    </div>
 
-    <!--  PRICE -->
-    <p><b>Price:</b> {{ price }} / day</p>
+                  <form action="/CarBooking" method="post">
+                    <input type="hidden" name="carId" value="{{ c[0] }}">
+                    <input type="hidden" name="price" value="{{ price }}">
 
-    <!--  BOOK FORM -->
-    <form action="CarBooking" method="post">
+                    <div class="mb-2">
+                        <input type="text" name="name" class="form-control form-control-sm" placeholder="Full Name" required>
+                    </div>
+                    <div class="mb-2">
+                        <input type="text" name="mobile" class="form-control form-control-sm" placeholder="Mobile Number" required>
+                    </div>
+                    
+                    <div class="row align-items-center mt-3">
+                        <div class="col-6">
+                            <label class="small text-muted">Rental Days</label>
+                            <input type="number" id="days_{{ c[0] }}" name="days" class="form-control form-control-sm" min="1" value="1" onchange="updateTotal('{{ c[0] }}', {{ price }})" required>
+                        </div>
+                        <div class="col-6 text-end">
+                            <label class="small text-muted d-block">Total</label>
+                            <input type="text" id="total_{{ c[0] }}" class="total-field text-end" readonly value="{{ price }} ₹">
+                        </div>
+                    </div>
 
-        <input type="hidden" name="carId" value="{{ c[0] }}">
-        <input type="hidden" name="price" value="{{ price }}">
+                    <button type="submit" class="btn-book">Book Car Now</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="text-center py-5" data-aos="fade-up">
+          <i class="bi bi-exclamation-circle text-danger display-1"></i>
+          <h3 class="mt-4">No cars found for your city.</h3>
+          <a href="/cars.html" class="btn btn-outline-primary mt-3">Modify Search</a>
+        </div>
+      {% endif %}
+    </div>
+  </main>
 
-        Name: <input type="text" name="name" required><br>
-        Mobile: <input type="text" name="mobile" required><br>
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container py-4 text-center">
+      <div class="copyright small text-secondary">
+        &copy; Copyright <strong><span>Trip Connect</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
 
-        <!--  DAYS -->
-        Days:
-        <input type="number"
-               id="days_{{ c[0] }}"
-               name="days"
-               value="1"
-               min="1"
-               onchange="updateTotal('{{ c[0] }}', {{ price }})"><br>
-
-        <!--  TOTAL -->
-        Total:
-        <input type="text"
-               id="total_{{ c[0] }}"
-               value="{{ price }}"
-               readonly><br>
-
-        <button type="submit">Book Car</button>
-    </form>
-
-</div>
-
-{% endfor %}
-{% else %}
-
-<h3 style="text-align:center;color:red;">No Cars Found</h3>
-
-{% endif %}
+  <script src="/static/assets/vendor/aos/aos.js"></script>
+  <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script>
+    AOS.init();
+  </script>
 
 </body>
 </html>
