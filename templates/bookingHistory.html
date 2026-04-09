@@ -92,7 +92,7 @@
       transition: 0.2s;
     }
 
-    .cancel-btn:hover { background: #c82333; }
+    .cancel-btn:hover { background: #c82333; transform: translateY(-1px); }
     
     .no-results {
         background: #fff;
@@ -101,6 +101,100 @@
         text-align: center;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(10, 10, 30, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 44px 40px 36px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
+      animation: slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-family: 'Inter', 'Open Sans', sans-serif;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(40px) scale(0.92); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-icon {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 22px;
+      box-shadow: 0 0 0 14px rgba(239,68,68,0.12), 0 0 30px rgba(239,68,68,0.25);
+    }
+
+    .modal-icon svg {
+      width: 32px; height: 32px;
+      stroke: #fff; stroke-width: 2.5;
+      fill: none; stroke-linecap: round; stroke-linejoin: round;
+    }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .modal-message {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .modal-btn {
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .modal-btn:hover { transform: translateY(-2px); }
+
+    .modal-btn-keep {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .modal-btn-keep:hover { background: rgba(255,255,255,0.14); }
+
+    .modal-btn-confirm {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(239,68,68,0.4);
+    }
+    .modal-btn-confirm:hover { box-shadow: 0 8px 24px rgba(239,68,68,0.5); }
   </style>
 </head>
 
@@ -157,13 +251,17 @@
 
                 <div class="col-md-4 text-end">
                   {% if b['status'] != 'CANCELLED' %}
-                    <form action="{{ b['action'] }}" method="post">
+                    <form id="cf-{{ b['id'] }}" action="{{ b['action'] }}" method="post" style="display:none">
                       <input type="hidden" name="cancel_id" value="{{ b['id'] }}">
                       <input type="hidden" name="mobile_no" value="{{ mobile }}">
-                      <button type="submit" class="cancel-btn" onclick="return confirm('Cancel this {{ b['type'] }} booking?');">
-                        Cancel Booking
-                      </button>
                     </form>
+                    <button type="button" class="cancel-btn"
+                      data-form="cf-{{ b['id'] }}"
+                      data-type="{{ b['type'] }}"
+                      data-service="{{ b['service'] }}"
+                      onclick="showCancelModal(this)">
+                      Cancel Booking
+                    </button>
                   {% endif %}
                 </div>
               </div>
@@ -191,10 +289,51 @@
     </div>
   </footer>
 
+  <!-- Cancel Confirmation Modal -->
+  <div class="modal-overlay" id="cancelModal">
+    <div class="modal-box">
+      <div class="modal-icon">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      </div>
+      <div class="modal-title" id="modalTitle">Cancel Booking?</div>
+      <div class="modal-message" id="modalMsg">This action cannot be undone.</div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-keep" onclick="closeCancelModal()">Keep It</button>
+        <button class="modal-btn modal-btn-confirm" id="confirmBtn" onclick="submitCancel()">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/static/assets/vendor/aos/aos.js"></script>
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
     AOS.init();
+    var activeFormId = null;
+
+    function showCancelModal(btn) {
+      activeFormId = btn.getAttribute('data-form');
+      var type = btn.getAttribute('data-type');
+      var service = btn.getAttribute('data-service');
+      document.getElementById('modalTitle').textContent = 'Cancel ' + type + ' Booking?';
+      document.getElementById('modalMsg').textContent =
+        'Are you sure you want to cancel your ' + type + ' booking for "' + service + '"? This cannot be undone.';
+      document.getElementById('cancelModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCancelModal() {
+      document.getElementById('cancelModal').classList.remove('active');
+      document.body.style.overflow = '';
+      activeFormId = null;
+    }
+
+    function submitCancel() {
+      if (activeFormId) document.getElementById(activeFormId).submit();
+    }
+
+    document.getElementById('cancelModal').addEventListener('click', function(e) {
+      if (e.target === this) closeCancelModal();
+    });
   </script>
 
 </body>

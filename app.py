@@ -123,9 +123,17 @@ def ureg():
             # Equivalent to JS window.alert('Successfully Registration')
             # Assuming flash messages are somewhat shown or user just redirects
             # For exact parity, you could return JS alert, but redirect is cleaner.
-            return "<script>window.alert('Successful Registration'); window.location.href='/login.html';</script>"
+            return render_template('notification.html', 
+                                   notif_type='success', 
+                                   title='Registration Successful', 
+                                   message='Your account has been created. Welcome to TripConnect!', 
+                                   redirect_url='/login.html')
         except Exception as e:
-            return f"<script>window.alert('Something Went Wrong: {e}'); window.location.href='/login.html';</script>"
+            return render_template('notification.html', 
+                                   notif_type='error', 
+                                   title='Registration Failed', 
+                                   message=f'Something went wrong: {e}', 
+                                   redirect_url='/login.html')
         finally:
             cursor.close()
             con.close()
@@ -146,9 +154,17 @@ def ulog():
             if user:
                 session['email'] = email
                 session['user_id'] = user.get('id', '')
-                return "<script>alert('Successfully Logged In!'); window.location.href='/dashboard.html';</script>"
+                return render_template('notification.html', 
+                                       notif_type='success', 
+                                       title='Login Successful', 
+                                       message=f'Welcome back, {user.get("name", "User")}!', 
+                                       redirect_url='/dashboard.html')
             else:
-                return "<script>alert('Invalid Email or Password'); window.location.href='/login.html';</script>"
+                return render_template('notification.html', 
+                                       notif_type='error', 
+                                       title='Login Failed', 
+                                       message='Invalid email or password. Please try again.', 
+                                       redirect_url='/login.html')
         except Exception as e:
             return f"<h3>Database Error: {e}</h3>"
         finally:
@@ -182,12 +198,20 @@ def verify_otp():
                 q = "UPDATE users SET password=%s WHERE email=%s"
                 cursor.execute(q, (new_password, email))
                 con.commit()
-                return "<script>alert('Password Reset Successfully!'); window.location.href='/login.html';</script>"
+                return render_template('notification.html', 
+                                       notif_type='success', 
+                                       title='Password Reset', 
+                                       message='Your password has been updated successfully.', 
+                                       redirect_url='/login.html')
             finally:
                 cursor.close()
                 con.close()
     else:
-        return "<script>alert('Invalid OTP!'); window.location.href='/forgot.html';</script>"
+        return render_template('notification.html', 
+                               notif_type='error', 
+                               title='Verification Failed', 
+                               message='The OTP you entered is invalid.', 
+                               redirect_url='/forgot.html')
 
 # BUS BOOKING
 
@@ -240,11 +264,23 @@ def bus_booking():
                 updateQuery = "UPDATE buses SET seats_available = seats_available - %s WHERE id=%s AND seats_available >= %s"
                 cursor.execute(updateQuery, (passengers, bus_id, passengers))
                 con.commit()
-                return "<script>alert('Bus Booking Confirmed!'); window.location.href='/mybooking.html';</script>"
+                return render_template('notification.html', 
+                                       notif_type='success', 
+                                       title='Booking Confirmed', 
+                                       message='Your bus seats have been reserved successfully.', 
+                                       redirect_url='/mybooking.html')
             else:
-                return "<script>alert('Not Enough Seats Available!'); window.location.href='/buses.html';</script>"
+                return render_template('notification.html', 
+                                       notif_type='error', 
+                                       title='Booking Failed', 
+                                       message='Sorry, there are not enough seats available for this bus.', 
+                                       redirect_url='/buses.html')
         except Exception as e:
-             return f"<script>alert('Error: {e}'); window.location.href='/buses.html';</script>"
+             return render_template('notification.html', 
+                                    notif_type='error', 
+                                    title='Error', 
+                                    message=f'An error occurred: {e}', 
+                                    redirect_url='/buses.html')
         finally:
             cursor.close()
             con.close()
@@ -308,7 +344,11 @@ def car_booking():
              update = "UPDATE cars SET available = available - 1 WHERE id=%s AND available > 0"
              cursor.execute(update, (car_id,))
              con.commit()
-             return "<script>alert('Car Booking Confirmed!'); window.location.href='/mybooking.html';</script>"
+             return render_template('notification.html', 
+                                    notif_type='success', 
+                                    title='Car Rental Confirmed', 
+                                    message='Your car has been booked. Pick-up details are in your booking history.', 
+                                    redirect_url='/mybooking.html')
         finally:
              cursor.close()
              con.close()
@@ -403,7 +443,11 @@ def hotel_booking():
                 query = "INSERT INTO bookings (fullname, email, mobile, hotel_name, checkin, checkout, days, total_amount, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'CONFIRMED')"
                 cursor.execute(query, (fullname, email, mobile, hotelName, checkin, checkout, days, total_amount))
                 con.commit()
-                return "<script>alert('Hotel Booked Successfully!'); window.location.href='/mybooking.html';</script>"
+                return render_template('notification.html', 
+                                       notif_type='success', 
+                                       title='Hotel Room Booked', 
+                                       message=f'Your stay at {hotelName} is confirmed!', 
+                                       redirect_url='/mybooking.html')
         finally:
             cursor.close()
             con.close()
