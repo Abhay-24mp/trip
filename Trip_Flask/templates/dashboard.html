@@ -7,139 +7,304 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trip Connect Dashboard</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+<link href="/static/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
+:root {
+  --primary: #ff5e14;
+  --secondary: #ff8e53;
+  --glass-bg: rgba(255, 255, 255, 0.2);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-hover: rgba(255, 255, 255, 0.35);
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
 }
 
-body{
-  display:flex;
-  height:100vh;
-  background:linear-gradient(rgba(210, 201, 201, 0.6),rgba(60, 53, 53, 0.6)),
-  url('https://images.unsplash.com/photo-1541410965313-d53b3c16ef17?') no-repeat center/cover;
-  color:black;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.8)),
+              url('https://images.unsplash.com/photo-1541410965313-d53b3c16ef17?') no-repeat center/cover;
+  color: var(--text-main);
+  overflow: hidden; /* prevents scroll on dashboard frame */
+}
+
+h1, h2, h3, .logo {
+  font-family: 'Outfit', sans-serif;
 }
 
 /* Sidebar */
-.sidebar{
-  width:240px;
-  background:rgba(141, 134, 134, 0.1);
-  backdrop-filter:blur(10px);
-  padding:20px;
-  display:flex;
-  flex-direction:column;
+.sidebar {
+  width: 260px;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 30px 20px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--glass-border);
+  box-shadow: 5px 0 25px rgba(0,0,0,0.2);
+  z-index: 10;
 }
 
-.logo{
-  font-size:22px;
-  font-weight:600;
-  margin-bottom:30px;
+.logo {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 40px;
+  text-align: center;
+  background: linear-gradient(135deg, #fff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
 }
 
-.menu a{
-  text-decoration:none;
-  color:black;
-  padding:12px;
-  display:block;
-  border-radius:10px;
-  margin-bottom:10px;
-  transition:0.3s;
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
 }
 
-.menu a:hover{
-  background:rgba(173, 166, 166, 0.2);
+.menu a {
+  text-decoration: none;
+  color: var(--text-muted);
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
 }
 
-/* Main */
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
+.menu a i {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.menu a:hover, .menu a.active {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  color: #fff;
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.menu a:hover i {
+  color: var(--primary);
+  transform: scale(1.1);
+}
+
+.logout-btn {
+  margin-top: auto;
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.logout-btn:hover {
+  background: rgba(239, 68, 68, 0.3) !important;
+  color: #fff !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Main Content Area */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }
 
 /* Topbar */
-.topbar{
-  display:flex;
-  justify-content:space-between;
-  padding:15px 25px;
-  background:rgba(255,255,255,0.1);
-  /*backdrop-filter:blur(12px);*/
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 40px;
 }
 
-.profile{
-  display:flex;
-  align-items:center;
-  gap:10px;
+.topbar h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-.profile img{
-  width:35px;
-  height:35px;
-  border-radius:50%;
+.profile-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--glass-bg);
+  padding: 8px 16px;
+  border-radius: 30px;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
 }
 
-/* Content */
-.content{
-  padding:25px;
+.profile-chip img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
-/* Stats */
-.stats{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
+.profile-chip span {
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-.card{
-  padding:20px;
-  border-radius:15px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(12px);
-  transition:0.3s;
+/* Content Area */
+.content {
+  padding: 0 40px 40px 40px;
 }
 
-.card:hover{
-  transform:translateY(-5px) scale(1.03);
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-/* Services */
-.services{
-  margin-top:30px;
+.section-title i {
+  color: var(--primary);
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:20px;
-  font:bold;
+/* Quick Access Cards */
+.quick-access-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  margin-bottom: 40px;
 }
 
-.service-card{
-  padding:20px;
-  border-radius:15px;
-  text-align:center;
-  background:rgba(255,255,255,0.15);
-  /*backdrop-filter:blur(12px);*/
-  transition:0.3s;
-  text-decoration:none;
-  color:black;
-  font:bold;
+.qa-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
+  padding: 30px 20px;
+  border-radius: 20px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
 }
 
-.service-card:hover{
-  transform:translateY(-8px);
-  background:rgba(255,255,255,0.25);
+.qa-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+  z-index: 0;
+}
+
+.qa-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.qa-icon-wrapper {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 20px rgba(255, 94, 20, 0.3);
+  transition: transform 0.4s ease;
+}
+
+.qa-card h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.qa-card:hover {
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  border-color: rgba(255,255,255,0.6);
+}
+
+.qa-card:hover .qa-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* User Stats Panel */
+.stats-panel {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #fff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.2;
+}
+
+.stat-label {
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 /* Responsive */
-@media(max-width:768px){
-  .sidebar{
-    display:none;
+@media(max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+  .content {
+    padding: 20px;
   }
 }
 </style>
@@ -153,12 +318,12 @@ body{
   <div class="logo">TripConnect</div>
 
   <div class="menu">
-    <a href="/dashboard.html">🏠 Dashboard</a>
-    <a href="/hotels">🏨 Hotels</a>
-    <a href="/buses.html">🚌 Buses</a>
-    <a href="/cars.html">🚗 Cars</a>
-    <a href="/mybooking.html">My Bookings</a>
-    <a href="/first"> Logout </a>
+    <a href="/dashboard.html" class="active"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+    <a href="/hotels"><i class="bi bi-building"></i> Hotels</a>
+    <a href="/buses.html"><i class="bi bi-bus-front"></i> Buses</a>
+    <a href="/cars.html"><i class="bi bi-car-front-fill"></i> Cars</a>
+    <a href="/mybooking.html"><i class="bi bi-journal-check"></i> My Bookings</a>
+    <a href="/first" class="logout-btn"><i class="bi bi-box-arrow-right"></i> Logout</a>
   </div>
 </div>
 
@@ -167,29 +332,37 @@ body{
 
   <!-- Topbar -->
   <div class="topbar">
-    <h1>Welcome To Dashboard</h1>
-
-   
+    <h1>Dashboard Overview</h1>
+    <div class="profile-chip">
+        <img src="https://ui-avatars.com/api/?name=User&background=ff5e14&color=fff" alt="User">
+        <span>My Account</span>
+    </div>
   </div>
 
   <!-- Content -->
-  
   <div class="content">
 
-   
-
-    <!-- Services -->
-    <div class="services">
-      <h2>Quick Access</h2>
-
-      <div class="grid">
-        <a href="/hotels" class="service-card">🏨 Hotels</a>
-        <a href="/buses.html" class="service-card">🚌 Buses</a>
-        <a href="/cars.html" class="service-card">🚗 Cars</a>
-        <a href="/mybooking.html" class="service-card">My Bookings</a>
-      </div>
+    <!-- Quick Access -->
+    <h2 class="section-title"><i class="bi bi-lightning-charge-fill"></i> Quick Access</h2>
+    <div class="quick-access-grid">
+      <a href="/hotels" class="qa-card">
+        <div class="qa-icon-wrapper"><i class="bi bi-building text-white"></i></div>
+        <h3>Book Hotels</h3>
+      </a>
+      <a href="/buses.html" class="qa-card">
+        <div class="qa-icon-wrapper"><i class="bi bi-bus-front text-white"></i></div>
+        <h3>Book Buses</h3>
+      </a>
+      <a href="/cars.html" class="qa-card">
+        <div class="qa-icon-wrapper"><i class="bi bi-car-front-fill text-white"></i></div>
+        <h3>Rent Cars</h3>
+      </a>
+      <a href="/mybooking.html" class="qa-card">
+        <div class="qa-icon-wrapper" style="background: linear-gradient(135deg, #10b981, #34d399);"><i class="bi bi-ticket-detailed text-white"></i></div>
+        <h3>My Bookings</h3>
+      </a>
     </div>
-
+    
   </div>
 
 </div>

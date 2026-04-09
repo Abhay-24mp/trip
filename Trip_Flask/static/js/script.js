@@ -25,7 +25,7 @@ name:"Royal Palace Hotel",
 location:"Jaipur",
 price:4200,
 rating:"⭐⭐⭐⭐",
-image:"https://images.unsplash.com/photo-1551882547-ff40c63fe5fa"
+image:"https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&w=1080&fit=crop&q=80&fm=jpg"
 }
 
 ]))

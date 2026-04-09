@@ -1,113 +1,120 @@
-
 <!doctype html>
 <html>
+
 <head>
     <title>TripConnect</title>
 
     <!-- ✅ CSS PATH FIX -->
     <link rel="stylesheet" href="/static/css/style.css" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
 
 <body>
 
-<!-- Navbar -->
-<nav class="navbar">
-    <div class="logo">TripConnect</div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">TripConnect</div>
 
-    <ul class="nav-links">
-        <li><a href="/login.html">Login</a></li>
-        <li><a href="/signin.html">Register</a></li>
-    </ul>
-</nav>
+        <ul class="nav-links">
+            <li><a href="/login.html">Login</a></li>
+            <li><a href="/signin.html">Register</a></li>
+        </ul>
+    </nav>
 
-<!-- Hero -->
-<section class="hero">
-    <h1>Plan Your Perfect Trip</h1>
-    <p>Hotels • Buses • Cars</p>
+    <!-- Hero -->
+    <section class="hero">
+        <h1>Plan Your Perfect Trip</h1>
+    </section>
 
-    <div class="search-box">
-        <input id="searchInput" placeholder="Search hotels, buses, cars" />
-        <button onclick="searchService()">Search</button>
-    </div>
-</section>
+    <!-- Services -->
+    <section class="services">
+        <h2>Travel Services</h2>
 
-<!-- Services -->
-<section class="services">
-    <h2>Travel Services</h2>
+        <div class="grid">
 
-    <div class="grid">
+            <div class="card service-card">
+                <h3>🏨 Hotels</h3>
+                <p>Book luxury and budget hotels</p>
 
-        <div class="card service-card">
-            <h3>🏨 Hotels</h3>
-            <p>Book luxury and budget hotels</p>
+                <!-- ✅ JSP LINK FIX -->
+                <a href="/hotels" class="btn">Explore</a>
+            </div>
 
-            <!-- ✅ JSP LINK FIX -->
-            <a href="/index" class="btn">Explore</a>
+            <div class="card service-card">
+                <h3>🚌 Buses</h3>
+                <p>Rent buses for group travel</p>
+                <a href="/buses.html" class="btn">Explore</a>
+            </div>
+
+            <div class="card service-card">
+                <h3>🚗 Cars</h3>
+                <p>Hire cars easily</p>
+                <a href="/cars.html" class="btn">Explore</a>
+            </div>
+
         </div>
 
-        <div class="card service-card">
-            <h3>🚌 Buses</h3>
-            <p>Rent buses for group travel</p>
-            <a href="/buses.html" class="btn">Explore</a>
+        <div id="toast" class="toast">Booking Successful</div>
+    </section>
+
+    <!-- Destinations -->
+    <section class="destinations">
+        <h2>Popular Destinations</h2>
+
+        <div class="grid">
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?ixlib=rb-4.0.3&w=600&fit=crop&q=80&fm=jpg" />
+                <h3>Goa</h3>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?ixlib=rb-4.0.3&w=600&fit=crop&q=80&fm=jpg" />
+                <h3>Manali</h3>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1477587458883-47145ed94245?ixlib=rb-4.0.3&w=600&fit=crop&q=80&fm=jpg" />
+                <h3>Jaipur</h3>
+            </div>
+
+            <div class="card">
+                <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?ixlib=rb-4.0.3&w=600&fit=crop&q=80&fm=jpg" />
+                <h3>Kerala</h3>
+            </div>
         </div>
+    </section>
 
-        <div class="card service-card">
-            <h3>🚗 Cars</h3>
-            <p>Hire cars easily</p>
-            <a href="/cars.html" class="btn">Explore</a>
+    <!-- Stats -->
+    <section class="stats">
+        <div class="grid">
+            <div class="card">
+                <h2>500+</h2>
+                <p>Hotels</p>
+            </div>
+            <div class="card">
+                <h2>200+</h2>
+                <p>Buses</p>
+            </div>
+            <div class="card">
+                <h2>300+</h2>
+                <p>Cars</p>
+            </div>
+            <div class="card">
+                <h2>10k+</h2>
+                <p>Happy Travelers</p>
+            </div>
         </div>
+    </section>
 
-    </div>
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 TripConnect</p>
+    </footer>
 
-    <div id="toast" class="toast">Booking Successful</div>
-</section>
-
-<!-- Destinations -->
-<section class="destinations">
-    <h2>Popular Destinations</h2>
-
-    <div class="grid">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da"/>
-            <h3>Goa</h3>
-        </div>
-
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1548013146-72479768bada"/>
-            <h3>Manali</h3>
-        </div>
-
-        <div class="card">
-            <img src="https://as1.ftcdn.net/v2/jpg/05/46/56/46/1000_F_546564657_MZDgdf0C4LlRbLosYPaddZAOgT2xzFYZ.jpg"/>
-            <h3>Jaipur</h3>
-        </div>
-
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944"/>
-            <h3>Kerala</h3>
-        </div>
-    </div>
-</section>
-
-<!-- Stats -->
-<section class="stats">
-    <div class="grid">
-        <div class="card"><h2>500+</h2><p>Hotels</p></div>
-        <div class="card"><h2>200+</h2><p>Buses</p></div>
-        <div class="card"><h2>300+</h2><p>Cars</p></div>
-        <div class="card"><h2>10k+</h2><p>Happy Travelers</p></div>
-    </div>
-</section>
-
-<!-- Footer -->
-<footer>
-    <p>© 2026 TripConnect</p>
-</footer>
-
-<!-- ✅ JS PATH FIX -->
-<script src="/static/js/script.js"></script>
+    <!-- ✅ JS PATH FIX -->
+    <script src="/static/js/script.js"></script>
 
 </body>
+
 </html>

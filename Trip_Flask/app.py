@@ -1,6 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import mysql.connector
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'super_secret_key_tripconnect'
@@ -41,15 +42,21 @@ def forgot_page():
 
 @app.route('/dashboard.html')
 def dashboard():
+    if 'email' not in session:
+        return redirect(url_for('login_page'))
     return render_template('dashboard.html')
 
 @app.route('/buses.html')
 @app.route('/busindex.html')
 def buses_page():
+    if 'email' not in session:
+        return redirect(url_for('login_page'))
     return render_template('busindex.html')
 
 @app.route('/cars.html')
 def cars_page():
+    if 'email' not in session:
+        return redirect(url_for('login_page'))
     con = get_db_connection()
     cities = []
     if con:
@@ -64,6 +71,8 @@ def cars_page():
 
 @app.route('/mybooking.html')
 def mybooking_page():
+    if 'email' not in session:
+        return redirect(url_for('login_page'))
     return render_template('mybooking.html')
 
 @app.route('/busForm')
@@ -89,7 +98,7 @@ def bus_form_page():
 def first_page():
     # Clear session if logout behavior is desired
     session.clear()
-    return render_template('first.html')
+    return redirect(url_for('index'))
 
 # AUTH PORTION
 
@@ -216,12 +225,10 @@ def bus_booking():
             res = cursor.fetchone()
             if res and res[0] >= passengers:
                 insertQuery = "INSERT INTO busbookings (name, mobile, bus_id, passengers, status) VALUES (%s, %s, %s, %s, 'CONFIRMED')"
-                # JS app might not have had status column here, adjust if needed
-                # we'll assume it exists or falls back
                 try:
                     cursor.execute(insertQuery, (fullname, mobile, bus_id, passengers))
-                except mysql.connector.errors.ProgrammingError as e:
-                    # fallback if status doesn't exist
+                except mysql.connector.errors.ProgrammingError:
+                    # Fallback for older schemas
                     insertQuery = "INSERT INTO busbookings (name, mobile, bus_id, passengers) VALUES (%s, %s, %s, %s)"
                     cursor.execute(insertQuery, (fullname, mobile, bus_id, passengers))
                 
@@ -243,10 +250,8 @@ def cancel_bus_booking():
     
     con = get_db_connection()
     if con:
-         # Need to fetch passengers and bus_id first, then cancel
          cursor = con.cursor()
          try:
-             # Just an approximation: The java servlet does UPDATE busbookings... and UPDATE buses setup here
              cursor.execute("SELECT bus_id, passengers FROM busbookings WHERE id=%s AND status!='CANCELLED'", (booking_id,))
              res = cursor.fetchone()
              if res:
@@ -273,7 +278,6 @@ def search_car():
             cursor.execute(query, (city,))
             results = cursor.fetchall()
             for row in results:
-                # 0: id, 1: name, 2: type, 3: price, 4: seats, 5: city, 6: available, 7: image
                 cars.append([str(x) for x in row])
         finally:
             cursor.close()
@@ -306,7 +310,6 @@ def car_booking():
              
 @app.route('/CancelCarBooking', methods=['POST'])
 def cancel_car_booking():
-    # Similar to others
     booking_id = request.form.get('cancel_id')
     con = get_db_connection()
     if con:
@@ -319,9 +322,6 @@ def cancel_car_booking():
                   cursor.execute("UPDATE carbookings SET status='CANCELLED' WHERE id=%s", (booking_id,))
                   cursor.execute("UPDATE cars SET available = available + 1 WHERE id=%s", (car_id,))
                   con.commit()
-             # usually returning back to view bookings
-             # Not perfectly identical to the JSP form since it might need POST data.
-             # We can just redirect to mybooking.
              return redirect(url_for('mybooking_page'))
          finally:
              cursor.close()
@@ -332,12 +332,14 @@ def cancel_car_booking():
 @app.route('/hotels', methods=['GET', 'POST'])
 @app.route('/hotels.html', methods=['GET', 'POST'])
 def hotels_page():
+    if 'email' not in session:
+        return redirect(url_for('login_page'))
     con = get_db_connection()
     hotels = []
     if con:
          cursor = con.cursor(dictionary=True)
          try:
-              cursor.execute("SELECT name, location, price_per_night, description, image FROM hotels")
+              cursor.execute("SELECT name, location, price_per_night, description, image FROM hotels LIMIT 8")
               for row in cursor.fetchall():
                   hotels.append({
                       'name': row['name'],
@@ -356,8 +358,6 @@ def hotels_page():
 @app.route('/HotelSearch', methods=['POST'])
 def search_hotel():
     location = request.form.get('location')
-    checkin = request.form.get('checkin')
-    checkout = request.form.get('checkout')
     guests = request.form.get('guests')
     
     con = get_db_connection()
@@ -366,14 +366,12 @@ def search_hotel():
          cursor = con.cursor(dictionary=True)
          try:
               q = "SELECT * FROM hotels WHERE LOWER(location) LIKE LOWER(%s) AND max_guests >= %s"
-              # Like operator with wildcard
               cursor.execute(q, (f"%{location}%", guests))
               hotels = cursor.fetchall()
          finally:
               cursor.close()
               con.close()
               
-    # Hotels page expects hotels list. Re-rendering hotels.html with filtered list.
     return render_template('hotels.html', hotels=hotels)
 
 @app.route('/HotelBooking', methods=['POST'])
@@ -385,8 +383,6 @@ def hotel_booking():
     checkin = request.form.get('checkin')
     checkout = request.form.get('checkout')
     
-    # Calculate days
-    from datetime import datetime
     d1 = datetime.strptime(checkin, "%Y-%m-%d")
     d2 = datetime.strptime(checkout, "%Y-%m-%d")
     days = (d2 - d1).days

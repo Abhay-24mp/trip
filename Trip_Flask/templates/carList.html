@@ -7,7 +7,7 @@
   <title>Available Cars - Trip Connect</title>
 
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="/static/assets/vendor/aos/aos.css" rel="stylesheet">
@@ -18,95 +18,307 @@
   <link href="/static/assets/css/style.css" rel="stylesheet">
 
   <style>
-    body { background: #f4f6f9; }
-    #header { background: rgba(20, 30, 48, 0.9); position: relative; }
+    :root {
+      --primary-color: #ff5e14;
+      --secondary-color: #ff8e53;
+      --gradient-bg: linear-gradient(135deg, #f4f6f9 0%, #eef2f7 100%);
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+    }
+
+    body { 
+      background: var(--gradient-bg);
+      font-family: 'Inter', sans-serif;
+    }
+    
+    h1, h2, h3, h4, h5, h6, .price-tag, .btn-book {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    #header { background: rgba(20, 30, 48, 0.95); position: relative; backdrop-filter: blur(10px); }
     
     .results-container {
-      padding: 60px 0;
+      padding: 80px 0;
+      min-height: calc(100vh - 100px);
+    }
+
+    .page-title {
+      color: var(--text-dark);
+      font-weight: 800;
+      font-size: 2.5rem;
+      position: relative;
+      display: inline-block;
+      margin-bottom: 3rem;
+    }
+
+    .page-title::after {
+      content: '';
+      position: absolute;
+      width: 50%;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 2px;
     }
 
     .car-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-      transition: 0.3s;
-      border-left: 5px solid #ff7a18;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .car-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+      opacity: 0;
+      transition: 0.4s ease;
     }
 
     .car-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+      background: #ffffff;
+    }
+
+    .car-card:hover::before {
+      opacity: 1;
+    }
+
+    .car-img-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      height: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .car-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .car-card:hover .car-img-wrapper img {
+      transform: scale(1.08);
+    }
+
+    .car-info {
+      padding: 10px 20px;
     }
 
     .car-info h3 {
       font-weight: 700;
-      color: #2c3e50;
-      margin-bottom: 15px;
+      color: var(--text-dark);
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
     }
 
     .car-badge {
-      background: #fff3e0;
-      color: #e65100;
-      padding: 4px 12px;
-      border-radius: 20px;
+      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      color: var(--primary-color);
+      padding: 6px 16px;
+      border-radius: 30px;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       display: inline-block;
       margin-bottom: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 10px rgba(255, 94, 20, 0.15);
     }
 
     .info-grid {
       display: flex;
-      gap: 30px;
-      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px 25px;
+      margin-bottom: 15px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      color: var(--text-light);
+      font-size: 0.95rem;
+      font-weight: 500;
+      background: #f8fafc;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      transition: 0.3s ease;
+    }
+
+    .car-card:hover .info-item {
+      background: #fff;
+      border-color: #cbd5e1;
     }
 
     .info-item i {
-      color: #ff7a18;
+      color: var(--primary-color);
       margin-right: 8px;
+      font-size: 1.1rem;
     }
 
     .booking-panel {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid #eee;
+      background: #f8fafc;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: 0.3s ease;
+    }
+
+    .car-card:hover .booking-panel {
+      box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+      border-color: #cbd5e1;
     }
 
     .price-tag {
-      font-size: 24px;
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1;
+    }
+    
+    .price-currency {
+      font-size: 18px;
+      color: var(--primary-color);
+      vertical-align: top;
       font-weight: 700;
-      color: #ff7a18;
+    }
+    
+    .price-period {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 400;
     }
 
-    .btn-book {
-      background: #ff7a18;
-      color: #fff;
-      border: none;
-      padding: 10px 25px;
-      border-radius: 5px;
-      font-weight: 600;
-      width: 100%;
+    .form-control {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 15px;
+      font-size: 0.95rem;
+      background: #fff;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(255, 94, 20, 0.1);
+    }
+
+    .total-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 15px;
+      border: 1px dashed #cbd5e1;
+    }
+
+    .total-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-light);
+      margin: 0;
     }
 
     .total-field {
-      font-weight: 700;
-      color: #27ae60;
-      font-size: 18px;
+      font-weight: 800;
+      color: #10b981;
+      font-size: 22px;
       border: none;
       background: transparent;
-      width: 100px;
+      text-align: right;
+      width: 120px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .btn-book {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: #fff;
+      border: none;
+      padding: 14px 25px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      width: 100%;
+      margin-top: 20px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+      box-shadow: 0 8px 20px rgba(255, 94, 20, 0.3);
+    }
+
+    .btn-book::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      z-index: -1;
+      transition: opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .btn-book:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(255, 94, 20, 0.4);
+      color: #fff;
+    }
+    
+    .btn-book:hover::before {
+      opacity: 1;
+    }
+    
+    .empty-state {
+      background: #fff;
+      border-radius: 20px;
+      padding: 60px 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      border: 1px solid #eee;
+    }
+    
+    .empty-state i {
+      background: linear-gradient(135deg, #ff5e14, #ff8e53);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
   </style>
 
   <script>
     function updateTotal(carId, price) {
         let days = document.getElementById("days_" + carId).value;
+        if(days < 1) {
+            days = 1;
+            document.getElementById("days_" + carId).value = 1;
+        }
         let total = days * price;
-        document.getElementById("total_" + carId).value = total + " ₹";
+        // Format to Indian locale for better readability
+        document.getElementById("total_" + carId).value = total.toLocaleString('en-IN') + " ₹";
     }
   </script>
 </head>
@@ -129,60 +341,76 @@
 
   <main class="results-container">
     <div class="container">
-      <h2 class="text-center mb-5 fw-bold" data-aos="fade-up">Available Car Rentals</h2>
+      <div class="text-center mb-5" data-aos="fade-down">
+         <h2 class="page-title">Available Premium Cars</h2>
+         <p class="text-muted" style="font-size: 1.1rem;">Choose from our exclusive collection for an unforgettable journey.</p>
+      </div>
 
       {% if cars %}
         <div class="row">
           {% for c in cars %}
           {% set price = c[3]|int %}
-          <div class="col-lg-10 mx-auto" data-aos="fade-up">
-            <div class="car-card row">
-              <div class="col-md-3">
-                <img src="{{ c[7] }}" class="img-fluid rounded shadow-sm" style="height: 140px; width: 100%; object-fit: cover; margin-top: 10px;">
-              </div>
-              <div class="col-md-5 car-info">
-                <span class="car-badge">{{ c[2] }}</span>
-                <h3>{{ c[1] }}</h3>
-                <div class="info-grid">
-                  <div class="info-item"><i class="bi bi-geo-alt-fill"></i>{{ c[5] }}</div>
-                  <div class="info-item"><i class="bi bi-people-fill"></i>{{ c[4] }} Seats</div>
+          <div class="col-lg-11 mx-auto" data-aos="fade-up" data-aos-delay="{{ loop.index * 100 }}">
+            <div class="car-card">
+              <div class="row align-items-center">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                  <div class="car-img-wrapper">
+                      <img src="{{ c[7] }}" alt="{{ c[1] }}">
+                  </div>
                 </div>
-                <div class="info-grid">
-                  <div class="info-item"><i class="bi bi-check-circle-fill"></i>Available: {{ c[6] }}</div>
+                <div class="col-lg-4 car-info mb-4 mb-lg-0">
+                  <span class="car-badge"><i class="bi bi-star-fill me-1"></i> {{ c[2] }}</span>
+                  <h3>{{ c[1] }}</h3>
+                  
+                  <div class="info-grid">
+                    <div class="info-item"><i class="bi bi-geo-alt-fill"></i>{{ c[5] }}</div>
+                    <div class="info-item"><i class="bi bi-people-fill"></i>{{ c[4] }} Seats</div>
+                    <div class="info-item" style="color: #10b981; border-color: #a7f3d0; background: #ecfdf5;"><i class="bi bi-check-circle-fill" style="color: #10b981;"></i>{{ c[6] }} Available</div>
+                  </div>
                 </div>
-              </div>
 
-              <div class="col-md-4">
-                <div class="booking-panel">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <span class="text-muted">Price per day</span>
-                        <span class="price-tag">₹ {{ price }}</span>
+                <div class="col-lg-4">
+                  <div class="booking-panel">
+                    <div class="d-flex justify-content-between align-items-end mb-4">
+                        <span class="text-muted fw-bold">Daily Rate</span>
+                        <div>
+                            <span class="price-currency">₹</span>
+                            <span class="price-tag">{{ price }}</span>
+                            <span class="price-period">/day</span>
+                        </div>
                     </div>
 
                   <form action="/CarBooking" method="post">
                     <input type="hidden" name="carId" value="{{ c[0] }}">
                     <input type="hidden" name="price" value="{{ price }}">
 
-                    <div class="mb-2">
-                        <input type="text" name="name" class="form-control form-control-sm" placeholder="Full Name" required>
-                    </div>
-                    <div class="mb-2">
-                        <input type="text" name="mobile" class="form-control form-control-sm" placeholder="Mobile Number" required>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6">
+                            <input type="text" name="name" class="form-control" placeholder="Full Name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" name="mobile" class="form-control" placeholder="Mobile No." required pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number">
+                        </div>
                     </div>
                     
-                    <div class="row align-items-center mt-3">
-                        <div class="col-6">
-                            <label class="small text-muted">Rental Days</label>
-                            <input type="number" id="days_{{ c[0] }}" name="days" class="form-control form-control-sm" min="1" value="1" onchange="updateTotal('{{ c[0] }}', {{ price }})" required>
+                    <div class="row align-items-center g-2 mt-2">
+                        <div class="col-md-5">
+                            <label class="small fw-bold text-muted mb-1">Rental Days</label>
+                            <input type="number" id="days_{{ c[0] }}" name="days" class="form-control" min="1" value="1" onchange="updateTotal('{{ c[0] }}', {{ price }})" required>
                         </div>
-                        <div class="col-6 text-end">
-                            <label class="small text-muted d-block">Total</label>
-                            <input type="text" id="total_{{ c[0] }}" class="total-field text-end" readonly value="{{ price }} ₹">
+                        <div class="col-md-7">
+                            <div class="total-box">
+                                <span class="total-label">Total</span>
+                                <input type="text" id="total_{{ c[0] }}" class="total-field" readonly value="{{ "{:,.0f}".format(price) }} ₹">
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-book">Book Car Now</button>
+                    <button type="submit" class="btn-book">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Book Now
+                    </button>
                   </form>
+                  </div>
                 </div>
               </div>
             </div>
@@ -190,19 +418,22 @@
           {% endfor %}
         </div>
       {% else %}
-        <div class="text-center py-5" data-aos="fade-up">
-          <i class="bi bi-exclamation-circle text-danger display-1"></i>
-          <h3 class="mt-4">No cars found for your city.</h3>
-          <a href="/cars.html" class="btn btn-outline-primary mt-3">Modify Search</a>
+        <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
+          <div class="empty-state">
+              <i class="bi bi-emoji-frown display-1 mb-4 d-block"></i>
+              <h3 class="fw-bold text-dark">No cars available</h3>
+              <p class="text-muted lead">We couldn't find any cars matching your criteria in this city.</p>
+              <a href="/cars.html" class="btn btn-primary btn-lg mt-3 rounded-pill px-5 shadow">Try another city</a>
+          </div>
         </div>
       {% endif %}
     </div>
   </main>
 
   <!-- ======= Footer ======= -->
-  <footer id="footer">
+  <footer id="footer" class="mt-auto">
     <div class="container py-4 text-center">
-      <div class="copyright small text-secondary">
+      <div class="copyright small text-secondary fw-medium">
         &copy; Copyright <strong><span>Trip Connect</span></strong>. All Rights Reserved
       </div>
     </div>
@@ -211,7 +442,10 @@
   <script src="/static/assets/vendor/aos/aos.js"></script>
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
-    AOS.init();
+    AOS.init({
+      duration: 800,
+      once: true
+    });
   </script>
 
 </body>
