@@ -177,13 +177,56 @@ def ulog():
 @app.route('/SendOTP', methods=['POST'])
 def send_otp():
     email = request.form.get('email')
+    
+    # Check if email exists first
+    con = get_db_connection()
+    if con:
+        cursor = con.cursor(dictionary=True)
+        try:
+            cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+            user = cursor.fetchone()
+            if not user:
+                return render_template('notification.html', 
+                                       notif_type='error', 
+                                       title='User Not Found', 
+                                       message='This email is not registered with us.', 
+                                       redirect_url='/forgot.html')
+        finally:
+            cursor.close()
+            con.close()
+            
     import random
     otp = str(random.randint(1000, 9999))
     session['otp'] = otp
     session['email'] = email
-    # Usually you'd send an email here.
-    print(f"OTP for {email} is {otp}")
-    return render_template('verifyOtp.html', email=email)
+    
+    # Try sending via email if configured
+    smtp_user = os.getenv('SMTP_USER')
+    smtp_pass = os.getenv('SMTP_PASS')
+    
+    if smtp_user and smtp_pass:
+        try:
+            import smtplib
+            from email.mime.text import MIMEText
+            msg = MIMEText(f"Your TripConnect verification OTP is: {otp}")
+            msg['Subject'] = "TripConnect Password Reset OTP"
+            msg['From'] = smtp_user
+            msg['To'] = email
+            
+            with smtplib.SMTP('smtp.gmail.com', 587) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_pass)
+                server.send_message(msg)
+                
+            return render_template('verifyOtp.html', email=email, otp_sent=True)
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+            # Fallback to demo mode if email fails
+            return render_template('verifyOtp.html', email=email, demo_otp=otp)
+    else:
+        # Demo mode when no SMTP credentials are provided
+        print(f"OTP for {email} is {otp} (Demo Mode)")
+        return render_template('verifyOtp.html', email=email, demo_otp=otp)
 
 @app.route('/VerifyOTP', methods=['POST'])
 def verify_otp():

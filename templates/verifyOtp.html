@@ -196,6 +196,12 @@
     <h2>Verify Your OTP</h2>
     <p class="subtitle">Enter the 4-digit code sent to your email and choose a new password.</p>
 
+    {% if demo_otp %}
+    <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); padding: 12px; border-radius: 8px; margin-bottom: 20px; text-align: center; color: #10b981; font-weight: 500; font-size: 0.9rem;">
+      <span style="opacity: 0.8">Demo Mode OTP:</span> <strong style="font-size: 1.1rem; letter-spacing: 2px;">{{ demo_otp }}</strong>
+    </div>
+    {% endif %}
+
     <form action="/VerifyOTP" method="post">
       <div class="form-group">
         <label for="otp">OTP Code</label>
