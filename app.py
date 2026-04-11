@@ -19,6 +19,8 @@ def get_db_connection():
         # Enable SSL if running in cloud (DB_HOST env var is set)
         if os.getenv('DB_HOST'):
             conn_args['ssl_disabled'] = False
+            conn_args['ssl_verify_cert'] = False
+            conn_args['ssl_verify_identity'] = False
         con = mysql.connector.connect(**conn_args)
         return con
     except Exception as e:
