@@ -9,8 +9,8 @@ import razorpay
 
 app = Flask(__name__)
 
-RAZORPAY_KEY_ID = 'rzp_test_ScKVDGjGcqEnLD'
-RAZORPAY_KEY_SECRET = '6HDINF3WzqpUX96uy3jtvzfX'
+RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', 'rzp_test_ScKu8yiPGER6ml')
+RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', 'WwXeGnU0c3eIvvq9svNgQSbk')
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 app.secret_key = 'super_secret_key_tripconnect'
 
