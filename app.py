@@ -25,7 +25,7 @@ def get_db_connection():
         return con
     except Exception as e:
         print(f"Error connecting to database: {e}")
-        return f"CRITICAL_DB_ERR: {str(e)}"
+        return None
 
 # Static / Template Routing
 
@@ -146,13 +146,7 @@ def ulog():
     email = request.form.get('email')
     password = request.form.get('password')
     
-    try:
-        con = get_db_connection()
-        if isinstance(con, str):
-            return f"<h3>Database Error directly from connection: {con}</h3>"
-    except Exception as e:
-        return f"<h3>Database connection error: {e}</h3>"
-        
+    con = get_db_connection()
     if con:
         cursor = con.cursor(dictionary=True)
         try:
