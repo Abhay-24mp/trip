@@ -161,7 +161,7 @@
                     <span class="price-tag">₹ {{ price }}</span>
                   </div>
 
-                  <form action="/BusBooking" method="post">
+                  <form action="/BusBooking" method="post" id="bus_form_{{ b[0] }}">
                     <input type="hidden" name="busId" value="{{ b[0] }}">
                     <input type="hidden" name="price" value="{{ price }}">
 
@@ -183,7 +183,7 @@
                       </div>
                     </div>
 
-                    <button type="submit" class="btn-book">Confirm Booking</button>
+                    <button type="button" class="btn-book" onclick="payWithRazorpay('{{ b[0] }}', {{ price }})">Pay & Book</button>
                   </form>
                 </div>
               </div>
@@ -214,6 +214,49 @@
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
     AOS.init();
+  </script>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function payWithRazorpay(busId, pricePerSeat) {
+        let passengers = document.getElementById("passengers_" + busId).value;
+        let totalAmount = passengers * pricePerSeat;
+        
+        fetch('/create_razorpay_order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: totalAmount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.error) {
+                alert("Error setting up payment: " + data.error);
+                return;
+            }
+            
+            var options = {
+                "key": data.key_id,
+                "amount": data.amount,
+                "currency": data.currency,
+                "name": "Trip Connect",
+                "description": "Bus Booking",
+                "order_id": data.order_id,
+                "handler": function (response){
+                    // Success handler, submit the form
+                    document.getElementById('bus_form_' + busId).submit();
+                },
+                "theme": {
+                    "color": "#ff7a18"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error connecting to payment gateway");
+        });
+    }
   </script>
 
 </body>

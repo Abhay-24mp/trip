@@ -531,7 +531,7 @@
       </div>
 
       <div class="booking-form">
-        <form action="/HotelBooking" method="post">
+        <form action="/HotelBooking" method="post" id="hotel_form">
 
           <input type="text" name="fullname" placeholder="Full Name" required />
           <input type="email" name="email" placeholder="Email Address" required />
@@ -556,7 +556,7 @@
           <input type="text" id="days" placeholder="Total Duration" readonly />
           <input type="text" id="total" placeholder="Total Payable Amount" readonly />
 
-          <button type="submit">Complete Booking</button>
+          <button type="button" onclick="payWithRazorpay()">Pay & Book</button>
         </form>
       </div>
     </div>
@@ -608,6 +608,89 @@
 
     // page load pe auto run
     window.onload = updateAll;
+  </script>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function payWithRazorpay() {
+        let select = document.getElementById("hotel-drop");
+        if (select.selectedIndex <= 0) {
+            alert("Please select a hotel first.");
+            return;
+        }
+
+        let priceItem = select.options[select.selectedIndex].getAttribute("data-price");
+        let price = parseInt(priceItem) || 0;
+
+        let checkin = document.getElementById("checkin").value;
+        let checkout = document.getElementById("checkout").value;
+
+        if (!checkin || !checkout) {
+            alert("Please select valid check-in and check-out dates.");
+            return;
+        }
+
+        let d1 = new Date(checkin);
+        let d2 = new Date(checkout);
+        let diffDays = (d2 - d1) / (1000 * 60 * 60 * 24);
+
+        if (diffDays <= 0) {
+            alert("Check-out date must be after check-in date.");
+            return;
+        }
+
+        let totalAmount = diffDays * price;
+
+        // Ensure fullname, email, mobile are not empty
+        let fullname = document.querySelector('input[name="fullname"]').value;
+        let email = document.querySelector('input[name="email"]').value;
+        let mobile = document.querySelector('input[name="mobile"]').value;
+        
+        if(!fullname || !email || !mobile) {
+            alert("Please fill in all contact details (Name, Email, Mobile).");
+            return;
+        }
+
+        fetch('/create_razorpay_order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: totalAmount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.error) {
+                alert("Error setting up payment: " + data.error);
+                return;
+            }
+            
+            var options = {
+                "key": data.key_id,
+                "amount": data.amount,
+                "currency": data.currency,
+                "name": "Trip Connect",
+                "description": "Premium Hotel Booking",
+                "order_id": data.order_id,
+                "prefill": {
+                    "name": fullname,
+                    "email": email,
+                    "contact": mobile
+                },
+                "handler": function (response){
+                    // Success handler, submit the form
+                    document.getElementById('hotel_form').submit();
+                },
+                "theme": {
+                    "color": "#ff5e14"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error connecting to payment gateway");
+        });
+    }
   </script>
 </body>
 

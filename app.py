@@ -2,11 +2,16 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 import mysql.connector
 from datetime import datetime
+import razorpay
 
 app = Flask(__name__)
+
+RAZORPAY_KEY_ID = 'rzp_test_ScKVDGjGcqEnLD'
+RAZORPAY_KEY_SECRET = '6HDINF3WzqpUX96uy3jtvzfX'
+razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 app.secret_key = 'super_secret_key_tripconnect'
 
 def get_db_connection():
@@ -516,6 +521,29 @@ def cancel_hotel_booking():
               con.close()
     return redirect(url_for('mybooking_page'))
 
+
+@app.route('/create_razorpay_order', methods=['POST'])
+def create_razorpay_order():
+    try:
+        data = request.get_json()
+        if not data or 'amount' not in data:
+            return jsonify({'error': 'Amount missing'}), 400
+        
+        amount = int(float(data['amount'])) * 100 # convert to paise
+        currency = 'INR'
+        
+        # Create Order
+        razorpay_order = razorpay_client.order.create(dict(amount=amount, currency=currency, payment_capture='1'))
+        
+        return jsonify({
+            'order_id': razorpay_order['id'],
+            'amount': amount,
+            'currency': currency,
+            'key_id': RAZORPAY_KEY_ID
+        })
+    except Exception as e:
+        print(f"Razorpay Error: {e}")
+        return jsonify({'error': str(e)}), 500
 
 # VIEW BOOKINGS
 

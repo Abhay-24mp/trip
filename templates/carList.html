@@ -380,7 +380,7 @@
                         </div>
                     </div>
 
-                  <form action="/CarBooking" method="post">
+                  <form action="/CarBooking" method="post" id="car_form_{{ c[0] }}">
                     <input type="hidden" name="carId" value="{{ c[0] }}">
                     <input type="hidden" name="price" value="{{ price }}">
 
@@ -406,8 +406,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-book">
-                        <i class="bi bi-lightning-charge-fill me-1"></i> Book Now
+                    <button type="button" class="btn-book" onclick="payWithRazorpay('{{ c[0] }}', {{ price }})">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Pay & Book
                     </button>
                   </form>
                   </div>
@@ -446,6 +446,54 @@
       duration: 800,
       once: true
     });
+  </script>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    function payWithRazorpay(carId, pricePerDay) {
+        let days = document.getElementById("days_" + carId).value;
+        let totalAmount = days * pricePerDay;
+        
+        if (totalAmount <= 0) {
+            alert("Please enter a valid number of rental days.");
+            return;
+        }
+
+        fetch('/create_razorpay_order', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: totalAmount })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.error) {
+                alert("Error setting up payment: " + data.error);
+                return;
+            }
+            
+            var options = {
+                "key": data.key_id,
+                "amount": data.amount,
+                "currency": data.currency,
+                "name": "Trip Connect",
+                "description": "Car Rental Booking",
+                "order_id": data.order_id,
+                "handler": function (response){
+                    // Success handler, submit the form
+                    document.getElementById('car_form_' + carId).submit();
+                },
+                "theme": {
+                    "color": "#ff5e14"
+                }
+            };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Error connecting to payment gateway");
+        });
+    }
   </script>
 
 </body>
