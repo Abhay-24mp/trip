@@ -12,3 +12,4 @@ venv/
 .env
 .venv/
 Trip_Flask/scratch/
+.env
