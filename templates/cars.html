@@ -321,10 +321,121 @@
       .search-container h2 { font-size: 1.6rem; }
       .section-title { font-size: 1.8rem; margin-bottom: 2.5rem; }
     }
+
+    /* Sidebar Navigation Styles (Matching Dashboard) */
+    .sidebar {
+      width: 260px;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      position: fixed;
+      top: 0;
+      left: -260px;
+      z-index: 10000;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    }
+    
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar-logo {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 40px;
+      text-align: center;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      letter-spacing: -0.5px;
+    }
+
+    .sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .sidebar-menu a {
+      text-decoration: none;
+      color: #cbd5e1;
+      padding: 14px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+
+    .sidebar-menu a i {
+      font-size: 1.2rem;
+      color: #ff5e14;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #fff;
+      transform: translateX(5px);
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    
+    .sidebar-overlay.active {
+      display: block;
+    }
+
+    .mobile-nav-toggle {
+      display: none;
+      cursor: pointer;
+      color: #fff;
+      font-size: 2rem;
+      z-index: 1001;
+    }
+
+    @media (max-width: 991px) {
+      .mobile-nav-toggle {
+        display: block !important;
+      }
+      .navbar ul {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
 <body>
+  
+  <!-- Sidebar Navigation -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="sidebar" id="sidebarMenu">
+    <div class="sidebar-logo">TripConnect</div>
+    <div class="sidebar-menu">
+      <a href="/"><i class="bi bi-house-door"></i> Home</a>
+      <a href="/dashboard.html"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+      <a href="/hotels"><i class="bi bi-building"></i> Hotels</a>
+      <a href="/buses.html"><i class="bi bi-bus-front"></i> Buses</a>
+      <a href="/cars.html" class="active"><i class="bi bi-car-front-fill"></i> Cars</a>
+      <a href="/mybooking.html"><i class="bi bi-journal-check"></i> My Bookings</a>
+      <a href="/first" class="logout-btn" style="margin-top: auto;"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+  </div>
 
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top header-inner-pages">
@@ -333,8 +444,11 @@
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link" href="/">Home</a></li>
-          <li><a class="nav-link active" href="/cars.html">Cars</a></li>
           <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
+          <li><a class="nav-link" href="/hotels">Hotels</a></li>
+          <li><a class="nav-link" href="/buses.html">Buses</a></li>
+          <li><a class="nav-link active" href="/cars.html">Cars</a></li>
+          <li><a class="nav-link" href="/mybooking.html">My Bookings</a></li>
           <li><a class="nav-link logout-btn" href="/first">Logout</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
@@ -471,11 +585,23 @@
       once: true
     });
 
-    // Mobile Navigation Toggle
-    document.querySelector('.mobile-nav-toggle').addEventListener('click', function() {
-        document.querySelector('#navbar').classList.toggle('navbar-mobile');
-        this.classList.toggle('bi-list');
-        this.classList.toggle('bi-x');
+    // Sidebar Toggle Logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.querySelector('.mobile-nav-toggle');
+        const sidebar = document.getElementById('sidebarMenu');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (toggle && sidebar && overlay) {
+            toggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
+
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
+        }
     });
   </script>
 </body>
