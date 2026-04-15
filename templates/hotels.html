@@ -527,37 +527,37 @@
         <div class="search-group">
           <i class="bi bi-geo-alt"></i>
           <select name="location" required>
-            <option value="" disabled selected>Destination</option>
-            <option value="Mumbai">Mumbai</option>
-            <option value="Pune">Pune</option>
-            <option value="Delhi">Delhi</option>
-            <option value="Bangalore">Bangalore</option>
-            <option value="Hyderabad">Hyderabad</option>
-            <option value="Goa">Goa</option>
-            <option value="Jaipur">Jaipur</option>
-            <option value="Ahmedabad">Ahmedabad</option>
-            <option value="Indore">Indore</option>
-            <option value="Bhopal">Bhopal</option>
+            <option value="" disabled {{ 'selected' if not location else '' }}>Destination</option>
+            <option value="Mumbai" {{ 'selected' if location == 'Mumbai' else '' }}>Mumbai</option>
+            <option value="Pune" {{ 'selected' if location == 'Pune' else '' }}>Pune</option>
+            <option value="Delhi" {{ 'selected' if location == 'Delhi' else '' }}>Delhi</option>
+            <option value="Bangalore" {{ 'selected' if location == 'Bangalore' else '' }}>Bangalore</option>
+            <option value="Hyderabad" {{ 'selected' if location == 'Hyderabad' else '' }}>Hyderabad</option>
+            <option value="Goa" {{ 'selected' if location == 'Goa' else '' }}>Goa</option>
+            <option value="Jaipur" {{ 'selected' if location == 'Jaipur' else '' }}>Jaipur</option>
+            <option value="Ahmedabad" {{ 'selected' if location == 'Ahmedabad' else '' }}>Ahmedabad</option>
+            <option value="Indore" {{ 'selected' if location == 'Indore' else '' }}>Indore</option>
+            <option value="Bhopal" {{ 'selected' if location == 'Bhopal' else '' }}>Bhopal</option>
           </select>
         </div>
 
         <div class="search-group">
           <i class="bi bi-calendar-event"></i>
-          <input type="date" name="checkin" required title="Check-in" />
+          <input type="date" name="checkin" value="{{ checkin }}" required title="Check-in" />
         </div>
 
         <div class="search-group">
           <i class="bi bi-calendar-event-fill"></i>
-          <input type="date" name="checkout" required title="Check-out" />
+          <input type="date" name="checkout" value="{{ checkout }}" required title="Check-out" />
         </div>
 
         <div class="search-group">
           <i class="bi bi-person"></i>
           <select name="guests">
-            <option value="1">1 Guest</option>
-            <option value="2">2 Guests</option>
-            <option value="3">3 Guests</option>
-            <option value="4">4+ Guests</option>
+            <option value="1" {{ 'selected' if guests == '1' else '' }}>1 Guest</option>
+            <option value="2" {{ 'selected' if guests == '2' else '' }}>2 Guests</option>
+            <option value="3" {{ 'selected' if guests == '3' else '' }}>3 Guests</option>
+            <option value="4" {{ 'selected' if guests == '4' else '' }}>4+ Guests</option>
           </select>
         </div>
 
@@ -619,9 +619,16 @@
           </select>
 
           <div style="display: flex; gap: 15px;">
-            <input type="date" id="checkin" name="checkin" required onchange="updateAll()" title="Check-in Date" />
-            <input type="date" id="checkout" name="checkout" required onchange="updateAll()" title="Check-out Date" />
+            <input type="date" id="checkin" name="checkin" value="{{ checkin }}" required onchange="updateAll()" title="Check-in Date" />
+            <input type="date" id="checkout" name="checkout" value="{{ checkout }}" required onchange="updateAll()" title="Check-out Date" />
           </div>
+
+          <select name="guests" id="guests" required style="margin-top: 20px;">
+            <option value="1" {{ 'selected' if guests == '1' else '' }}>1 Guest</option>
+            <option value="2" {{ 'selected' if guests == '2' else '' }}>2 Guests</option>
+            <option value="3" {{ 'selected' if guests == '3' else '' }}>3 Guests</option>
+            <option value="4" {{ 'selected' if guests == '4' else '' }}>4+ Guests</option>
+          </select>
 
           <input type="text" id="rent" placeholder="Rent per night" readonly />
           <input type="text" id="days" placeholder="Total Duration" readonly />

@@ -439,11 +439,20 @@ def hotels_page():
               con.close()
               
     selected_hotel = request.args.get('hotel', '')
-    return render_template('hotels.html', hotels=hotels, selected_hotel=selected_hotel)
+    location = request.args.get('location', '')
+    checkin = request.args.get('checkin', '')
+    checkout = request.args.get('checkout', '')
+    guests = request.args.get('guests', '1')
+    return render_template('hotels.html', hotels=hotels, 
+                           selected_hotel=selected_hotel,
+                           location=location, checkin=checkin, 
+                           checkout=checkout, guests=guests)
 
 @app.route('/HotelSearch', methods=['POST'])
 def search_hotel():
     location = request.form.get('location')
+    checkin = request.form.get('checkin')
+    checkout = request.form.get('checkout')
     guests = request.form.get('guests')
     
     con = get_db_connection()
@@ -453,12 +462,21 @@ def search_hotel():
          try:
               q = "SELECT * FROM hotels WHERE LOWER(location) LIKE LOWER(%s) AND max_guests >= %s"
               cursor.execute(q, (f"%{location}%", guests))
-              hotels = cursor.fetchall()
+              for row in cursor.fetchall():
+                   hotels.append({
+                       'name': row['name'],
+                       'location': row['location'],
+                       'price': row['price_per_night'],
+                       'description': row['description'],
+                       'image': row['image'] or 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2670&auto=format&fit=crop'
+                   })
          finally:
               cursor.close()
               con.close()
               
-    return render_template('hotels.html', hotels=hotels)
+    return render_template('hotels.html', hotels=hotels, 
+                           location=location, checkin=checkin, 
+                           checkout=checkout, guests=guests)
 
 @app.route('/HotelBooking', methods=['POST'])
 def hotel_booking():
@@ -468,6 +486,7 @@ def hotel_booking():
     hotelName = request.form.get('hotelName')
     checkin = request.form.get('checkin')
     checkout = request.form.get('checkout')
+    guests = request.form.get('guests', 1)
     
     d1 = datetime.strptime(checkin, "%Y-%m-%d")
     d2 = datetime.strptime(checkout, "%Y-%m-%d")
@@ -481,8 +500,8 @@ def hotel_booking():
             hotel = cursor.fetchone()
             if hotel:
                 total_amount = days * hotel['price_per_night']
-                query = "INSERT INTO bookings (fullname, email, mobile, hotel_name, checkin, checkout, days, total_amount, status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'CONFIRMED')"
-                cursor.execute(query, (fullname, email, mobile, hotelName, checkin, checkout, days, total_amount))
+                query = "INSERT INTO bookings (fullname, email, mobile, hotel_name, checkin, checkout, days, total_amount, status, guests) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'CONFIRMED', %s)"
+                cursor.execute(query, (fullname, email, mobile, hotelName, checkin, checkout, days, total_amount, guests))
                 con.commit()
                 return render_template('notification.html', 
                                        notif_type='success', 
@@ -558,7 +577,7 @@ def view_bookings():
                    history.append(r)
                    
               # Fetch Hotels
-              hotelQuery = """SELECT id, hotel_name as service, '' as from_loc, '' as to_loc, checkin as date_val, days as qty, status 
+              hotelQuery = """SELECT id, hotel_name as service, '' as from_loc, '' as to_loc, checkin as date_val, days as qty, status, guests 
                               FROM bookings WHERE mobile=%s"""
               cursor.execute(hotelQuery, (mobile,))
               for r in cursor.fetchall():
