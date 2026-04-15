@@ -13,3 +13,5 @@ venv/
 .venv/
 Trip_Flask/scratch/
 .env
+*.sql
+scratch/

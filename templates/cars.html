@@ -53,7 +53,7 @@
 
     .hero-cars {
       width: 100%;
-      height: 70vh;
+      height: 60vh;
       background: linear-gradient(to right, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.4)), url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=80') center center;
       background-size: cover;
       background-attachment: fixed;
@@ -78,10 +78,10 @@
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
-      padding: 45px 50px;
+      padding: 30px 20px;
       border-radius: 24px;
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-      width: 100%;
+      width: 90%;
       max-width: 900px;
       border: 1px solid rgba(255, 255, 255, 0.3);
       position: relative;
@@ -89,7 +89,7 @@
     }
 
     .search-container h2 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       letter-spacing: -0.5px;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     }
@@ -312,6 +312,15 @@
       color: #fff;
       box-shadow: 0 4px 12px rgba(255, 94, 20, 0.3);
     }
+
+    /* Additional Mobile Fixes */
+    @media (max-width: 768px) {
+      #header .logo { font-size: 20px; }
+      .hero-cars { height: auto; padding: 120px 0 80px; background-attachment: scroll; }
+      .search-container { width: 95%; padding: 25px 15px; }
+      .search-container h2 { font-size: 1.6rem; }
+      .section-title { font-size: 1.8rem; margin-bottom: 2.5rem; }
+    }
   </style>
 </head>
 
@@ -326,8 +335,9 @@
           <li><a class="nav-link" href="/">Home</a></li>
           <li><a class="nav-link active" href="/cars.html">Cars</a></li>
           <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
-          <li><a class="nav-link" href="/first">Logout</a></li>
+          <li><a class="nav-link logout-btn" href="/first">Logout</a></li>
         </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>
     </div>
   </header>
@@ -460,8 +470,14 @@
       duration: 800,
       once: true
     });
-  </script>
 
+    // Mobile Navigation Toggle
+    document.querySelector('.mobile-nav-toggle').addEventListener('click', function() {
+        document.querySelector('#navbar').classList.toggle('navbar-mobile');
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
+    });
+  </script>
 </body>
 
 </html>

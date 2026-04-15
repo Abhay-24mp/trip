@@ -298,15 +298,58 @@ h1, h2, h3, .logo {
   letter-spacing: 1px;
 }
 
+.dash-toggle {
+  cursor: pointer;
+  color: #fff;
+}
+
+.d-flex { display: flex; }
+.align-items-center { align-items: center; }
+.gap-3 { gap: 1rem; }
+
 /* Responsive */
 @media(max-width: 768px) {
   .sidebar {
-    display: none;
+    position: fixed;
+    left: -260px;
+    height: 100%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+  }
+  .sidebar.active {
+    left: 0;
+  }
+  .topbar {
+    padding: 20px;
+    background: rgba(15, 23, 42, 0.6);
+  }
+  .topbar h1 {
+    font-size: 1.5rem;
   }
   .content {
-    padding: 20px;
+    padding: 15px;
+  }
+  .quick-access-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .stat-value {
+    font-size: 2rem;
   }
 }
+
+@media(max-width: 480px) {
+  .quick-access-grid {
+    grid-template-columns: 1fr;
+  }
+  .topbar {
+    padding: 15px;
+  }
+  .profile-chip span {
+    display: none;
+  }
+}
+
 </style>
 
 </head>
@@ -332,7 +375,12 @@ h1, h2, h3, .logo {
 
   <!-- Topbar -->
   <div class="topbar">
-    <h1>Dashboard Overview</h1>
+    <div class="d-flex align-items-center gap-3">
+        <div class="dash-toggle d-md-none" id="sidebarToggle">
+            <i class="bi bi-list fs-2"></i>
+        </div>
+        <h1>Dashboard Overview</h1>
+    </div>
     <div class="profile-chip">
         <img src="https://ui-avatars.com/api/?name=User&background=ff5e14&color=fff" alt="User">
         <span>My Account</span>
@@ -365,7 +413,26 @@ h1, h2, h3, .logo {
     
   </div>
 
-</div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('sidebarToggle');
+        const sidebar = document.querySelector('.sidebar');
+        const main = document.querySelector('.main');
 
+        if (toggle && sidebar) {
+            toggle.addEventListener('click', (e) => {
+                sidebar.classList.toggle('active');
+                e.stopPropagation();
+            });
+
+            // Close sidebar when clicking outside on mobile
+            main.addEventListener('click', () => {
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+    });
+  </script>
 </body>
 </html>

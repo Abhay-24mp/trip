@@ -1,0 +1,110 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Bookings{% endblock %}
+{% block page_title %}Booking Management{% endblock %}
+
+{% block content %}
+<!-- Filters & Search -->
+<div class="dash-card mb-4">
+    <form action="/admin/bookings" method="GET" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label">Service Type</label>
+            <select name="type" class="form-select">
+                <option value="all" {% if service_type == 'all' %}selected{% endif %}>All Services</option>
+                <option value="hotel" {% if service_type == 'hotel' %}selected{% endif %}>Hotels</option>
+                <option value="car" {% if service_type == 'car' %}selected{% endif %}>Cars</option>
+                <option value="bus" {% if service_type == 'bus' %}selected{% endif %}>Buses</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Search Customer / ID</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" name="search" class="form-control border-start-0" placeholder="Name, Email, Phone, or Booking ID..." value="{{ search }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100 rounded-pill">Apply Filters</button>
+        </div>
+    </form>
+</div>
+
+<!-- Bookings Table -->
+<div class="dash-card">
+    <div class="table-responsive border-0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Customer Name</th>
+                    <th>Service Details</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bookings %}
+                    {% for booking in bookings %}
+                    <tr>
+                        <td>
+                            <span class="badge rounded-pill {% if booking.service_type == 'hotel' %}bg-primary{% elif booking.service_type == 'bus' %}bg-info{% else %}bg-warning{% endif %} bg-opacity-10 {% if booking.service_type == 'hotel' %}text-primary{% elif booking.service_type == 'bus' %}text-info{% else %}text-warning{% endif %}">
+                                {{ booking.service_type|capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="fw-bold">{{ booking.customer }}</div>
+                            <div class="small text-muted">{{ booking.mobile }}</div>
+                            {% if booking.email %}<div class="small text-muted">{{ booking.email }}</div>{% endif %}
+                        </td>
+                        <td>
+                            <div class="small">#{{ booking.id }} - {{ booking.service }}</div>
+                        </td>
+                        <td>
+                            <span class="badge rounded-pill {% if booking.status == 'CONFIRMED' %}bg-success{% elif booking.status == 'CANCELLED' %}bg-danger{% else %}bg-secondary{% endif %} bg-opacity-10 {% if booking.status == 'CONFIRMED' %}text-success{% elif booking.status == 'CANCELLED' %}text-danger{% else %}text-secondary{% endif %}">
+                                {{ booking.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-light border rounded-pill px-3" data-bs-toggle="dropdown">
+                                Update <i class="bi bi-chevron-down ms-1 text-muted"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm rounded-3 mt-2">
+                                <li>
+                                    <form action="{{ url_for('admin.update_booking_status', stype=booking.service_type, id=booking.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="CONFIRMED">
+                                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2">
+                                            <i class="bi bi-check-circle-fill text-success"></i> Confirm
+                                        </button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form action="{{ url_for('admin.update_booking_status', stype=booking.service_type, id=booking.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="PENDING">
+                                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2">
+                                            <i class="bi bi-clock-fill text-warning"></i> Set Pending
+                                        </button>
+                                    </form>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ url_for('admin.update_booking_status', stype=booking.service_type, id=booking.id) }}" method="POST">
+                                        <input type="hidden" name="status" value="CANCELLED">
+                                        <button type="submit" class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger">
+                                            <i class="bi bi-x-circle-fill"></i> Cancel
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">No bookings found matching your filters.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

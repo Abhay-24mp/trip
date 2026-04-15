@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Admin Login - TripConnect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1e293b;
+            --secondary: #334155;
+            --accent: #ff5e14;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        }
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+            display: block;
+            text-decoration: none;
+        }
+        .logo span {
+            color: var(--accent);
+        }
+        .form-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        .form-control {
+            height: 50px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            padding: 10px 20px;
+            font-weight: 500;
+        }
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(255, 94, 20, 0.1);
+        }
+        .btn-login {
+            background: var(--primary);
+            color: #fff;
+            height: 50px;
+            border-radius: 12px;
+            font-weight: 700;
+            width: 100%;
+            margin-top: 20px;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-login:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+        .error-msg {
+            color: #ef4444;
+            font-size: 0.85rem;
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <a href="/" class="logo">Trip<span>Connect</span> Admin</a>
+        
+        <form action="/admin/login" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="admin@example.com" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            
+            <button type="submit" class="btn-login">Secure Login</button>
+            
+            {% if error %}
+                <div class="error-msg">
+                    <i class="bi bi-exclamation-circle"></i> {{ error }}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,177 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Hotels{% endblock %}
+{% block page_title %}Hotel Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold mb-0">Existing Hotels</h5>
+    <button class="btn btn-primary rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#addHotelModal">
+        <i class="bi bi-plus-lg me-2"></i> Add New Hotel
+    </button>
+</div>
+
+<div class="dash-card">
+    <div class="table-responsive border-0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Hotel Name</th>
+                    <th>Location</th>
+                    <th>Price/Night</th>
+                    <th>Max Guests</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if hotels %}
+                    {% for hotel in hotels %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="{{ hotel.image }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                <div>{{ hotel.name }}</div>
+                            </div>
+                        </td>
+                        <td>{{ hotel.location }}</td>
+                        <td>₹ {{ "{:,.0f}".format(hotel.price_per_night) }}</td>
+                        <td>{{ hotel.max_guests }}</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn-action btn-edit" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editHotelModal{{ hotel.id }}">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button class="btn-action btn-delete" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteHotelModal{{ hotel.id }}">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <!-- Edit Modal -->
+                    <div class="modal fade" id="editHotelModal{{ hotel.id }}" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content border-0 rounded-4">
+                                <div class="modal-header border-0 pb-0">
+                                    <h5 class="modal-title fw-bold">Edit Hotel</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <form action="{{ url_for('admin.edit_hotel', id=hotel.id) }}" method="POST">
+                                    <div class="modal-body p-4">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Hotel Name</label>
+                                                <input type="text" name="name" class="form-control" value="{{ hotel.name }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Location</label>
+                                                <input type="text" name="location" class="form-control" value="{{ hotel.location }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Price per Night (₹)</label>
+                                                <input type="number" name="price_per_night" class="form-control" value="{{ hotel.price_per_night }}" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Max Guests</label>
+                                                <input type="number" name="max_guests" class="form-control" value="{{ hotel.max_guests }}" required>
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Image URL</label>
+                                                <input type="text" name="image" class="form-control" value="{{ hotel.image }}">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Description</label>
+                                                <textarea name="description" class="form-control" rows="3">{{ hotel.description }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer border-0 pt-0">
+                                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-primary rounded-pill px-4">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delete Modal -->
+                    <div class="modal fade" id="deleteHotelModal{{ hotel.id }}" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content border-0 rounded-4">
+                                <div class="modal-body p-4 text-center">
+                                    <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-circle mx-auto mb-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-trash-fill fs-3"></i>
+                                    </div>
+                                    <h5 class="fw-bold">Delete Hotel?</h5>
+                                    <p class="text-muted small">Are you sure you want to delete <strong>{{ hotel.name }}</strong>? This action cannot be undone.</p>
+                                    <div class="d-flex gap-2 justify-content-center mt-4">
+                                        <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Keep</button>
+                                        <form action="{{ url_for('admin.delete_hotel', id=hotel.id) }}" method="POST">
+                                            <button type="submit" class="btn btn-danger rounded-pill px-4">Yes, Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">No hotels found. Add your first hotel!</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Hotel Modal -->
+<div class="modal fade" id="addHotelModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 rounded-4">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Add New Hotel</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('admin.add_hotel') }}" method="POST">
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Hotel Name</label>
+                            <input type="text" name="name" class="form-control" placeholder="e.g. Grand Resort" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" placeholder="e.g. Mumbai, Maharashtra" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Price per Night (₹)</label>
+                            <input type="number" name="price_per_night" class="form-control" placeholder="e.g. 5000" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Max Guests</label>
+                            <input type="number" name="max_guests" class="form-control" placeholder="e.g. 2" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Image URL</label>
+                            <input type="text" name="image" class="form-control" placeholder="https://unsplash.com/...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3" placeholder="Briefly describe the hotel amenities..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Add Hotel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

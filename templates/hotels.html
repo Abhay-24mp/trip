@@ -47,14 +47,15 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 50px;
-      background: rgba(255, 255, 255, 0.8);
+      padding: 20px 5%;
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(20px);
       position: fixed;
       top: 0;
       width: 100%;
-      z-index: 100;
+      z-index: 1000;
       box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      transition: 0.3s;
     }
 
     .navbar .logo {
@@ -67,6 +68,13 @@
     .nav-links {
       display: flex;
       align-items: center;
+    }
+
+    .nav-toggle {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--text-dark);
     }
 
     .nav-links a {
@@ -421,14 +429,74 @@
     }
 
     @media(max-width: 992px) {
-      .booking-section {
+      .navbar {
+        padding: 15px 5%;
+      }
+      .nav-toggle {
+        display: block;
+      }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: white;
         flex-direction: column;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        gap: 15px;
+      }
+      .nav-links.active {
+        display: flex;
+      }
+      .nav-links a {
+        margin: 0;
       }
 
+      .hero {
+        height: auto;
+        padding: 120px 20px 60px;
+      }
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .search-box {
+        width: 100%;
+        padding: 20px;
+        gap: 10px;
+      }
       .search-box input,
       .search-box select {
+        width: 100% !important;
+      }
+      .search-box .btn-search {
         width: 100%;
-        margin-bottom: 10px;
+      }
+
+      .container {
+        padding: 40px 20px;
+      }
+      .section-title {
+        font-size: 1.8rem;
+      }
+
+      .booking-section {
+        flex-direction: column;
+        padding: 30px 20px;
+      }
+      .booking-info h2 {
+        font-size: 1.8rem;
+      }
+    }
+
+    @media(max-width: 480px) {
+      .hero-title {
+        font-size: 2rem;
+      }
+      .hotel-list {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -439,11 +507,14 @@
   <!-- Navbar -->
   <div class="navbar">
     <a href="/" class="logo">TripConnect</a>
-    <div class="nav-links">
+    <div class="nav-toggle" id="navToggle">
+      <i class="bi bi-list"></i>
+    </div>
+    <div class="nav-links" id="navLinks">
       <a href="/hotels">Hotels</a>
       <a href="/buses.html">Buses</a>
       <a href="/cars.html">Cars</a>
-      <a href="/dashboard.html" class="bi bi-person-circle fs-4"></a>
+      <a href="/dashboard.html">Dashboard</a>
     </div>
   </div>
 
@@ -564,6 +635,11 @@
   </div>
 
   <script>
+    // Navbar Toggle
+    document.getElementById('navToggle').addEventListener('click', function() {
+      document.getElementById('navLinks').classList.toggle('active');
+    });
+
     function selectHotel(hotelName) {
       let select = document.getElementById("hotel-drop");
       for (let i = 0; i < select.options.length; i++) {

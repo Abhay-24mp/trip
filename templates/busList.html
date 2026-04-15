@@ -100,6 +100,12 @@
       background: transparent;
       width: 100px;
     }
+
+    @media (max-width: 992px) {
+      .bus-card { padding: 15px; }
+      .info-grid { flex-direction: column; gap: 10px; }
+      .booking-panel { margin-top: 20px; }
+    }
   </style>
 
   <script>
@@ -124,6 +130,7 @@
           <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
           <li><a class="nav-link" href="/first">Logout</a></li>
         </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>
     </div>
   </header>
@@ -137,12 +144,12 @@
           {% for b in buses %}
           {% set price = b[9]|int %}
           <div class="col-lg-10 mx-auto" data-aos="fade-up">
-            <div class="bus-card row">
+            <div class="bus-card row g-0">
               <div class="col-md-3">
                 <img src="{{ b[10] }}" class="img-fluid rounded shadow-sm" style="height: 120px; width: 100%; object-fit: cover; margin-top: 10px;">
               </div>
-              <div class="col-md-5 bus-info">
-                <span class="bus-badge">{{ b[6] }}</span>
+              <div class="col-md-5 bus-info ps-md-4">
+                <span class="bus-badge mt-2">{{ b[6] }}</span>
                 <h3>{{ b[1] }}</h3>
                 <div class="info-grid">
                   <div class="info-item"><i class="bi bi-geo-alt-fill"></i>{{ b[2] }} → {{ b[3] }}</div>
@@ -154,7 +161,7 @@
                 </div>
               </div>
 
-              <div class="col-md-5">
+              <div class="col-md-4">
                 <div class="booking-panel">
                   <div class="d-flex justify-content-between align-items-center mb-3">
                     <span class="text-muted">Price per seat</span>
@@ -214,6 +221,13 @@
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
     AOS.init();
+
+    // Mobile Navigation Toggle
+    document.querySelector('.mobile-nav-toggle').addEventListener('click', function() {
+        document.querySelector('#navbar').classList.toggle('navbar-mobile');
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
+    });
   </script>
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

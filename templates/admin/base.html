@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Admin Panel{% endblock %} - TripConnect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="/static/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #ff5e14;
+            --bg-light: #f8fafc;
+            --sidebar-width: 260px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-light);
+            margin: 0;
+            display: flex;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--primary);
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 2.5rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .sidebar .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+            margin-bottom: 3rem;
+            display: block;
+        }
+        .sidebar .logo span { color: var(--accent); }
+        
+        .nav-menu { flex: 1; }
+        .nav-item {
+            color: #94a3b8;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+        .nav-item.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .nav-item i { font-size: 1.25rem; }
+        
+        /* Main Content */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+        }
+        .topbar {
+            height: 70px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+        }
+        .topbar h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--primary);
+        }
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .admin-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+        }
+        
+        .content-area {
+            padding: 40px;
+        }
+        
+        /* Cards & Components */
+        .dash-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .table-responsive {
+            background: #fff;
+            border-radius: 16px;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        .table thead th {
+            background: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            padding: 16px;
+        }
+        .table tbody td {
+            padding: 16px;
+            vertical-align: middle;
+            color: var(--primary);
+            font-weight: 500;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        
+        .btn-action {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-edit { background: #f1f5f9; color: var(--primary); }
+        .btn-edit:hover { background: #e2e8f0; }
+        .btn-delete { background: #fef2f2; color: #ef4444; }
+        .btn-delete:hover { background: #fee2e2; }
+
+        .form-label { font-weight: 600; color: #64748b; margin-bottom: 8px; }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            padding: 10px 16px;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar { left: -100%; transition: 0.3s; }
+            .sidebar.active { left: 0; }
+            .main-wrapper { margin-left: 0; width: 100%; }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <div class="sidebar">
+        <a href="/" class="logo">Trip<span>Connect</span></a>
+        
+        <div class="nav-menu">
+            <a href="/admin/dashboard" class="nav-item {% if active_page == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-grid-1x2-fill"></i> Dashboard
+            </a>
+            <a href="/admin/bookings" class="nav-item {% if active_page == 'bookings' %}active{% endif %}">
+                <i class="bi bi-calendar-check-fill"></i> Bookings
+            </a>
+            <a href="/admin/hotels" class="nav-item {% if active_page == 'hotels' %}active{% endif %}">
+                <i class="bi bi-building-fill"></i> Hotels
+            </a>
+            <a href="/admin/cars" class="nav-item {% if active_page == 'cars' %}active{% endif %}">
+                <i class="bi bi-car-front-fill"></i> Cars
+            </a>
+            <a href="/admin/buses" class="nav-item {% if active_page == 'buses' %}active{% endif %}">
+                <i class="bi bi-bus-front-fill"></i> Buses
+            </a>
+        </div>
+        
+        <a href="/admin/logout" class="nav-item mt-auto text-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+
+    <div class="main-wrapper">
+        <div class="topbar">
+            <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+            <div class="admin-profile">
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-bold" style="font-size: 0.85rem;">Admin Account</div>
+                    <div class="text-muted" style="font-size: 0.75rem;">abhaypawarmp@gmail.com</div>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Admin&background=0f172a&color=fff" alt="Admin">
+            </div>
+        </div>
+
+        <div class="content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

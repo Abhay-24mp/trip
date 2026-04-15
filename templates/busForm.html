@@ -71,6 +71,12 @@
       background: #ff8b33;
       transform: scale(1.02);
     }
+
+    @media (max-width: 768px) {
+      .hero-search { height: auto; padding: 120px 0 80px; }
+      .form-container { width: 95%; padding: 25px 20px; }
+      .form-container h2 { font-size: 1.5rem; }
+    }
   </style>
 </head>
 
@@ -87,6 +93,7 @@
           <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
           <li><a class="nav-link" href="/first">Logout</a></li>
         </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>
     </div>
   </header>
@@ -141,7 +148,13 @@
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
     AOS.init();
-  </script>
 
+    // Mobile Navigation Toggle
+    document.querySelector('.mobile-nav-toggle').addEventListener('click', function() {
+        document.querySelector('#navbar').classList.toggle('navbar-mobile');
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
+    });
+  </script>
 </body>
 </html>

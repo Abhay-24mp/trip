@@ -307,6 +307,13 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
+    @media (max-width: 992px) {
+      .page-title { font-size: 1.8rem; }
+      .car-card { padding: 15px; }
+      .car-info { padding: 15px 0; }
+      .booking-panel { margin-top: 15px; }
+    }
   </style>
 
   <script>
@@ -335,6 +342,7 @@
           <li><a class="nav-link" href="/dashboard.html">Dashboard</a></li>
           <li><a class="nav-link" href="/first">Logout</a></li>
         </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>
     </div>
   </header>
@@ -445,6 +453,13 @@
     AOS.init({
       duration: 800,
       once: true
+    });
+
+    // Mobile Navigation Toggle
+    document.querySelector('.mobile-nav-toggle').addEventListener('click', function() {
+        document.querySelector('#navbar').classList.toggle('navbar-mobile');
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
     });
   </script>
 

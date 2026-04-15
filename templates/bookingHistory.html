@@ -195,6 +195,12 @@
       box-shadow: 0 4px 16px rgba(239,68,68,0.4);
     }
     .modal-btn-confirm:hover { box-shadow: 0 8px 24px rgba(239,68,68,0.5); }
+
+    @media (max-width: 768px) {
+      .booking-card { padding: 15px; }
+      .info-row { flex-direction: column; gap: 8px; }
+      .col-md-4.text-end { text-align: left !important; margin-top: 15px; }
+    }
   </style>
 </head>
 
@@ -211,6 +217,7 @@
           <li><a class="nav-link active" href="/mybooking.html">My Bookings</a></li>
           <li><a class="nav-link" href="/first">Logout</a></li>
         </ul>
+        <i class="bi bi-list mobile-nav-toggle"></i>
       </nav>
     </div>
   </header>
@@ -308,6 +315,14 @@
   <script src="/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script>
     AOS.init();
+
+    // Mobile Navigation Toggle
+    document.querySelector('.mobile-nav-toggle').addEventListener('click', function() {
+        document.querySelector('#navbar').classList.toggle('navbar-mobile');
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
+    });
+
     var activeFormId = null;
 
     function showCancelModal(btn) {

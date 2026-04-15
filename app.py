@@ -7,33 +7,21 @@ import mysql.connector
 from datetime import datetime
 import razorpay
 
+from database import get_db_connection
+
 app = Flask(__name__)
+
+# Register Admin Blueprint
+from admin import admin_bp
+app.register_blueprint(admin_bp)
 
 RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID', 'rzp_test_ScKu8yiPGER6mI')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET', 'WwXeGnU0c3eIvvq9svNgQSbk')
 razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 app.secret_key = 'super_secret_key_tripconnect'
 
-def get_db_connection():
-    try:
-        # Build connection args
-        conn_args = dict(
-            host=os.getenv('DB_HOST', 'localhost'),
-            user=os.getenv('DB_USER', 'root'),
-            password=os.getenv('DB_PASSWORD', 'abhay@6263'),
-            database=os.getenv('DB_NAME', 'trip'),
-            port=int(os.getenv('DB_PORT', 3306))
-        )
-        # Enable SSL if running in cloud (DB_HOST env var is set)
-        if os.getenv('DB_HOST'):
-            conn_args['ssl_disabled'] = False
-            conn_args['ssl_verify_cert'] = False
-            conn_args['ssl_verify_identity'] = False
-        con = mysql.connector.connect(**conn_args)
-        return con
-    except Exception as e:
-        print(f"Error connecting to database: {e}")
-        return None
+# Database connection moved to database.py
+
 
 # Static / Template Routing
 
